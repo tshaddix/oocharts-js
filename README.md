@@ -74,10 +74,10 @@ OOcharts uses the [Google Visualization Library](https://developers.google.com/c
 
 Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.
 
-###Metric###
+##Metric##
 Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.
 
-####Using JS####
+####Using JS####W
 Metrics can easily be created through the JSAPI under the `oo` object.
 
 - `constructor(profile, startDate, endDate)` - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
@@ -150,7 +150,7 @@ Once `oo.load` is called successfully, the HTML element content will be replaced
 </html>
 ```
 
-###Timeline###
+##Timeline##
 A timeline is a Google Visualization [line chart](https://developers.google.com/chart/interactive/docs/gallery/linechart) which shows metric values over a date range.
 
 ####Using JS####
@@ -223,7 +223,7 @@ You can also easily create Timelines through the HTML Attribute API as well.
 </html>
 ```
 
-###Pie###
+##Pie##
 A Pie chart is really just what it sounds like: A Pie chart. This chart uses the Google Visualization [Pie Chart](https://developers.google.com/chart/interactive/docs/gallery/piechart) to display a metric over a dimension (such as visits by browser type).
 
 ####Using JS####
@@ -297,7 +297,7 @@ Pie charts are available throught the new HTML API.
 </html>
 ```
 
-###Table###
+##Table##
 A Table can show a multiple dimensions by multiple metrics. This chart uses the Google Visualization [Table](https://developers.google.com/chart/interactive/docs/gallery/table).
 
 ####Using JS####
@@ -371,7 +371,7 @@ You may have guessed it: You can create Tables through the HTML API as well.
 </html>
 ```
 
-###Query###
+##Query##
 The Query object is the core object of the OOcharts JS. The query object maintains the metrics and dimensions under the charts and executes the API query when `draw()` is called. The Query can also be used by itself to fetch data from the OOcharts API, allowing you to use any charting library you want.
 
 - `constructor(profile, startDate, endDate)` - The Query constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
@@ -416,7 +416,7 @@ The Query object is the core object of the OOcharts JS. The query object maintai
 </html>
 ```
 
-###Advanced Chart/Query Options###
+##Advanced Chart/Query Options##
 You may want to add more complex behaviour to your charts (such as adding a filter to your Timeline). This is actually really easy. Under each charting object is a Query (above). You can set the properties on the query under the chart before drawing it to achieve more complex charts:
 
 ```js
@@ -428,13 +428,13 @@ timeline.query.setFilter('ga:visits>100'); //access query object
 timeline.draw(container);
 ```
 
-###Helper Methods###
+##Helper Methods##
 There are a couple public facing methods on the `oo` object which we've included to make your quest for chart greatness easier.
 
 - `oo.formatDate(date)` - Formats `date` into the acceptable GA format (YYYY-MM-DD);
 - `oo.parseDate(val)` - Parses a GA date string into a Javascript date object.
 
-###Theming###
+##Theming##
 You probably want to throw your own styles on the charts, right? You can do this through the `setOptions()` method that all of the charts have, but this would be cumbersome. Thank goodness there are some default options to set!
 
 - `oo.setTimelineDefaults(opts)` - Sets the default options of all new Timelines to `opts`.
@@ -446,3 +446,79 @@ This is especially helpful if you want to stick to the HTML API. Set your defaul
 #OOcharts API#
 
 Ah, so you want to drive stick huh? The OOcharts API is powerful all on its own, despite the cool looking chart library we include. This section will describe the two API endpoints and how to take advantage of them from Javascript in the browser or application code running on your server (cool, right?).
+
+##General##
+
+All OOcharts API endpoints have the general format: `/{{version}}/{{action}}.{{type}}`. The `version` dictates the API version (current `v1`), the action describes the action `query` or `dynamic`, and finally the `type` dictates a response of `json` or `jsonp`.
+
+An example query call with a JSON response: `/v1/query.json`
+
+An example dynamic call with a JSONP response: `/v1/dynamic.jsonp`
+
+It should be noted that all `jsonp` response types will use the `callback` query string parameter.
+
+####Responses####
+Responses from either endpoint follow the format:
+
+```js
+// successful response
+{
+    "column_headers":[
+        {
+            "name":"ga:date",
+            "columnType":"DIMENSION",
+            "dataType":"STRING"
+        },
+        {
+            "name":"ga:visits",
+            "columnType":"METRIC",
+            "dataType":"NUMBER"
+        }
+    ]
+    , "rows":[] //Data rows in here
+    , "total_results": 32
+}
+
+// error response
+{
+    "error":"Invalid param {key}: API Key is invalid"
+}
+
+```
+
+## Query ##
+
+`GET /v1/query.json` or `GET /v1/query.jsonp`
+
+This endpoint is used to interact with the `Query` object in Mission Control.
+
+#### Query Strings ####
+
+- `key` - *(required)* Your API Key. This must have access to the Google Analytics profile used by the query.
+- `start` - *(required)* Start date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*.
+- `end` - *(optional)* End date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*. If no date is given, the current date of the Google Analytics profile's timezone (pretty snazzy huh?) will be used.
+- `query` - *(required)* The query slug of the Mission Control Query.
+- `page` - *(optional)* The page number of the results. Useful when using the Page Size setting of a Mission Control Query.
+- `filters` - *(optional)* A qualified Google Analytics filter string.
+- `callback` - *(optional)* Only necessary when using JSONP response type.
+
+## Dynamic ##
+
+`GET /v1/dynamic.json` or `GET /v1/dynamic.jsonp`
+
+This endpoint is used for dynamic access to your GA profiles. This is also the endpoint used by the charting library.
+
+#### Query Strings ####
+
+- `key` - *(required)* Your API Key. This must have access to the Google Analytics profile used by the query.
+- `profile` - *(required)* The Google Analytics profile ID.
+- `start` - *(required)* Start date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*.
+- `end` - *(optional)* End date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*. If no date is given, the current date of the Google Analytics profile's timezone (pretty snazzy huh?) will be used.
+- `metrics` - *(required)* A list of valid Google Analytics metrics deliminated by `,`.
+- `dimensions` - *(optional)* A list of valid Google Analytics dimensions deliminated by `,`.
+- `sort` - *(optional)* A list of valid Google Analytics sort parameters deliminated by `,`.
+- `segment` - *(optional)* A valid Google Analytics segment string.
+- `filters` - *(optional)* A qualified Google Analytics filter string.
+- `index` - *(optional)* The starting index of the query results.
+- `maxResults` - *(optional)* The max results for the query.
+- `callback` - *(optional)* Only necessary when using JSONP response type.
