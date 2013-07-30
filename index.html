@@ -1,0 +1,679 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>OOcharts JS by OOcharts</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>OOcharts JS</h1>
+        <p>JS frontend for OOcharts Service.</p>
+
+        <p class="view"><a href="https://github.com/OOcharts/oocharts-js">View the Project on GitHub <small>OOcharts/oocharts-js</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/OOcharts/oocharts-js/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/OOcharts/oocharts-js/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/OOcharts/oocharts-js">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h1>
+
+<p>OOcharts is an awesome little project that makes it easy to embed and share Google Analytics data through charts. It was started in the Summer of 2012 by <a href="http://tinb.in">Tin Bin</a> and continues to grow. There are a few basics you need to know in order to get started:</p>
+
+<h3>
+<a name="api-keys" class="anchor" href="#api-keys"><span class="octicon octicon-link"></span></a>API Keys</h3>
+
+<p>API Keys are created to give access to certain Google Analytics profiles. For every request to OOcharts, you will need a valid API Key. These keys can be created in <a href="https://app.oocharts.com/mc/key/list">Mission Control</a>.</p>
+
+<h3>
+<a name="queries" class="anchor" href="#queries"><span class="octicon octicon-link"></span></a>Queries</h3>
+
+<p>Queries are packaged requests that are prebuilt on <a href="https://app.oocharts.com/mc/query/list">Mission Control</a>. Altough the API supports dynamic requests, Queries are useful for security. Queries restrict the parameters sent to Google Analytics and hide the Analytics profile ID. Users who want to display certain data on their site while also ensuring other parameters can not be retrieved should use Queries instead of the dynamic API.</p>
+
+<h1>
+<a name="oocharts-js" class="anchor" href="#oocharts-js"><span class="octicon octicon-link"></span></a>OOcharts JS</h1>
+
+<p>OOcharts got its original footing providing an easy to use Charting library along with the API. Guess what, it's back!</p>
+
+<h4>
+<a name="whats-new-in-oocharts-js" class="anchor" href="#whats-new-in-oocharts-js"><span class="octicon octicon-link"></span></a>What's new in OOcharts JS</h4>
+
+<p>Other than the super fast and reliable API that sits behind it, the OOcharts JS script has had a number of improvements. One of the most notable is the ability to use HTML attributes to build charts:</p>
+
+<div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'timeline'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-profile=</span><span class="s">'some analytics profile id'</span> <span class="na">data-oochart-metrics=</span><span class="s">'ga:visits,Visits,ga:newVisits,New Visits'</span><span class="nt">&gt;&lt;/div&gt;</span>
+</pre></div>
+
+<p>The above code would draw a timeline which goes back 30 days (another feature is relative dates) to show all the visits and new visits on a line chart. Don't worry, we will get to the details.</p>
+
+<h3>
+<a name="including-the-script" class="anchor" href="#including-the-script"><span class="octicon octicon-link"></span></a>Including the Script</h3>
+
+<p>The OOcharts JS script is a single file. It can be downloaded from the GitHub repository (which also contains a number of examples). Simply place the <code>oocharts.js</code> file into your page:</p>
+
+<div class="highlight"><pre>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+</pre></div>
+
+<p>Once the script has loaded, you will have access to the <code>oo</code> object which houses all the Goodies to create OOcharts.</p>
+
+<h3>
+<a name="basics" class="anchor" href="#basics"><span class="octicon octicon-link"></span></a>Basics</h3>
+
+<p>All OOcharts JS objects work with a few basic principals:</p>
+
+<h4>
+<a name="api-key" class="anchor" href="#api-key"><span class="octicon octicon-link"></span></a>API Key</h4>
+
+<p>You will need to have already created an API Key with access to the Google Profile you are trying to display.</p>
+
+<h4>
+<a name="profile-id" class="anchor" href="#profile-id"><span class="octicon octicon-link"></span></a>Profile ID</h4>
+
+<p>You will also need the Google Analytics Profile ID. You can find this in Mission Control next to wherever the profile name is display in brackets, or on your Google Analytics Dashboard.</p>
+
+<h4>
+<a name="relative-dates" class="anchor" href="#relative-dates"><span class="octicon octicon-link"></span></a>Relative Dates</h4>
+
+<p>Dates can either be <code>Date</code> objects, Relative dates, or null (in which case the date will default to the current date). Relative Dates provide an easy way to get a range of data by using a number and a metric, such as "30d" for 30 days:</p>
+
+<ul>
+<li>'d': Days</li>
+<li>'w': Weeks</li>
+<li>'m': Months</li>
+<li>'y' Years</li>
+</ul><p>It is important to note that only one of the two dates (start and end) can be relative. If the start date is relative, then it will include the dates <strong>before</strong> the end date (i.e. "30d" would make the start date 30 days from the end date). If the end date is realtive, then it will include the dates <strong>after</strong> the start date.</p>
+
+<h4>
+<a name="setting-the-api-key-and-loading-the-dependencies" class="anchor" href="#setting-the-api-key-and-loading-the-dependencies"><span class="octicon octicon-link"></span></a>Setting the API Key and Loading the Dependencies</h4>
+
+<p>OOcharts uses the <a href="https://developers.google.com/chart/interactive/docs/reference">Google Visualization Library</a> to chart data. To get started, you will need to call the <code>load()</code> function after setting your API Key. This is all a bunch of gibberish, so here is a code example:</p>
+
+<div class="highlight"><pre>
+<span class="c">&lt;!--Include OOcharts script--&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">'text/javascript'</span><span class="nt">&gt;</span>
+    <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+        <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+            <span class="c1">//Do charts here</span>
+
+        <span class="p">});</span>
+    <span class="p">};</span>
+<span class="nt">&lt;/script&gt;</span>
+
+</pre></div>
+
+<p>Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.</p>
+
+<h2>
+<a name="metric" class="anchor" href="#metric"><span class="octicon octicon-link"></span></a>Metric</h2>
+
+<p>Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.</p>
+
+<h4>
+<a name="using-js" class="anchor" href="#using-js"><span class="octicon octicon-link"></span></a>Using JS</h4>
+
+<p>Metrics can easily be created through the JSAPI under the <code>oo</code> object.</p>
+
+<ul>
+<li>
+<code>constructor(profile, startDate, endDate)</code> - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
+<li>
+<code>setMetric(metric)</code> - Just as the method name states, this sets the metric to load. This should be a valid Google Analytics metric name, such as <code>"ga:visits"</code>; </li>
+<li>
+<code>draw(container, callback)</code> - Calling draw will draw the metric into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
+</ul><p>Here is a quick example of using a metric to show visits through the JS API. Normally, you would replace the <code>{{}}</code> content with your information.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+
+        Visits : <span class="nt">&lt;span</span> <span class="na">id=</span><span class="s">'metric'</span><span class="nt">&gt;&lt;/span&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+                    <span class="kd">var</span> <span class="nx">metric</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Metric</span><span class="p">(</span><span class="s2">"{{ YOUR PROFILE ID }}"</span><span class="p">,</span> <span class="s2">"30d"</span><span class="p">);</span>
+
+                    <span class="nx">metric</span><span class="p">.</span><span class="nx">setMetric</span><span class="p">(</span><span class="s2">"ga:visits"</span><span class="p">);</span>
+
+                    <span class="nx">metric</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="s1">'metric'</span><span class="p">);</span>
+
+                <span class="p">});</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h4>
+<a name="using-html-attributes" class="anchor" href="#using-html-attributes"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+
+<p>You can also easily create Metrics through the HTML Attribute API.</p>
+
+<ul>
+<li>
+<code>data-oochart</code> - For a metric, this should always have a value of <code>metric</code>.</li>
+<li>
+<code>data-oochart-metric</code> - Value of the metric to query.</li>
+<li>
+<code>data-oochart-profile</code> - The Google Analytics profile ID.</li>
+<li>
+<code>data-oochart-start-date</code> - The beginning date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-end-date</code> - The ending date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+</ul><p>Once <code>oo.load</code> is called successfully, the HTML element content will be replaced with the query results.</p>
+
+<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        New Visits : <span class="nt">&lt;span</span> <span class="na">data-oochart=</span><span class="s">'metric'</span> <span class="na">data-oochart-metric=</span><span class="s">'ga:newVisits'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-profile=</span><span class="s">'{{ YOUR PROFILE ID }}'</span><span class="nt">&gt;&lt;/span&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h2>
+<a name="timeline" class="anchor" href="#timeline"><span class="octicon octicon-link"></span></a>Timeline</h2>
+
+<p>A timeline is a Google Visualization <a href="https://developers.google.com/chart/interactive/docs/gallery/linechart">line chart</a> which shows metric values over a date range.</p>
+
+<h4>
+<a name="using-js-1" class="anchor" href="#using-js-1"><span class="octicon octicon-link"></span></a>Using JS</h4>
+
+<ul>
+<li>
+<code>constructor(profile, startDate, endDate)</code> - The Timeline constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
+<li>
+<code>addMetric(metric, label)</code> - Adds the <code>metric</code> to the timeline with the name <code>label</code>.</li>
+<li>
+<code>setOptions(opts)</code> -  Overwrites any default options for the timeline. See line chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/linechart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the timeline.</li>
+<li>
+<code>draw(container, callback)</code> - Calling draw will draw the Timeline into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">'chart'</span><span class="nt">&gt;&lt;/div&gt;</span>      
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+                    <span class="kd">var</span> <span class="nx">timeline</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Timeline</span><span class="p">(</span><span class="s2">"{{ YOUR PROFILE ID }}"</span><span class="p">,</span> <span class="s2">"30d"</span><span class="p">);</span>
+
+                    <span class="nx">timeline</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s2">"ga:visits"</span><span class="p">,</span> <span class="s2">"Visits"</span><span class="p">);</span>
+
+                    <span class="nx">timeline</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s2">"ga:newVisits"</span><span class="p">,</span> <span class="s2">"New Visits"</span><span class="p">);</span>
+
+                    <span class="nx">timeline</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="s1">'chart'</span><span class="p">);</span>
+
+                <span class="p">});</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h4>
+<a name="using-html-attributes-1" class="anchor" href="#using-html-attributes-1"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+
+<p>You can also easily create Timelines through the HTML Attribute API as well.</p>
+
+<ul>
+<li>
+<code>data-oochart</code> - Should always have value of <code>timeline</code> for timelines.</li>
+<li>
+<code>data-oochart-start-date</code> - The beginning date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-end-date</code> - The ending date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-profile</code> - The Google Analytics profile ID.</li>
+<li>
+<code>data-oochart-metrics</code> - A list of comma-deliminated metrics in the format: <code>metric,label,metric,label</code>. Check out the example below.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'timeline'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-metrics=</span><span class="s">'ga:visits,Visits,ga:newVisits,New Visits'</span> <span class="na">data-oochart-profile=</span><span class="s">'{{ YOUR PROFILE ID }}'</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h2>
+<a name="pie" class="anchor" href="#pie"><span class="octicon octicon-link"></span></a>Pie</h2>
+
+<p>A Pie chart is really just what it sounds like: A Pie chart. This chart uses the Google Visualization <a href="https://developers.google.com/chart/interactive/docs/gallery/piechart">Pie Chart</a> to display a metric over a dimension (such as visits by browser type).</p>
+
+<h4>
+<a name="using-js-2" class="anchor" href="#using-js-2"><span class="octicon octicon-link"></span></a>Using JS</h4>
+
+<ul>
+<li>
+<code>constructor(profile, startDate, endDate)</code> - The Pie constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
+<li>
+<code>setMetric(metric, label)</code> - Sets the <code>metric</code> of the Pie with the name <code>label</code>.</li>
+<li>
+<code>setDimension(dimension, label)</code> - Sets the <code>dimension</code> of the Pie.</li>
+<li>
+<code>setOptions(opts)</code> -  Overwrites any default options for the Pie. See Pie chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/piechart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the Pie.</li>
+<li>
+<code>draw(container, callback)</code> - Calling draw will draw the Pie into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">'pie'</span><span class="nt">&gt;&lt;/div&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+                    <span class="kd">var</span> <span class="nx">pie</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Pie</span><span class="p">(</span><span class="s2">"{{ YOUR PROFILE ID }}"</span><span class="p">,</span> <span class="s2">"30d"</span><span class="p">);</span>
+
+                    <span class="nx">pie</span><span class="p">.</span><span class="nx">setMetric</span><span class="p">(</span><span class="s2">"ga:visits"</span><span class="p">,</span> <span class="s2">"Visits"</span><span class="p">);</span>
+                    <span class="nx">pie</span><span class="p">.</span><span class="nx">setDimension</span><span class="p">(</span><span class="s2">"ga:browser"</span><span class="p">);</span>
+
+                    <span class="nx">pie</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="s1">'pie'</span><span class="p">);</span>
+
+                <span class="p">});</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h4>
+<a name="using-html-attributes-2" class="anchor" href="#using-html-attributes-2"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+
+<p>Pie charts are available throught the new HTML API.</p>
+
+<ul>
+<li>
+<code>data-oochart</code> - Should always have value of <code>timeline</code> for timelines.</li>
+<li>
+<code>data-oochart-start-date</code> - The beginning date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-end-date</code> - The ending date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-profile</code> - The Google Analytics profile ID.</li>
+<li>
+<code>data-oochart-metric</code> - Should contain the metric for the Pie and the label, seperated by a <code>,</code>. (i.e. <code>"ga:visits,Visits"</code>)</li>
+<li>
+<code>data-oochart-dimension</code> - Should contain the dimension for the Pie and the label, seperated by a <code>,</code>. (i.e. <code>"ga:browser,Browser"</code>)</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'pie'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-metric=</span><span class="s">'ga:visits,Visits'</span> <span class="na">data-oochart-dimension=</span><span class="s">'ga:browser'</span> <span class="na">data-oochart-profile=</span><span class="s">'{{ YOUR PROFILE ID }}'</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h2>
+<a name="table" class="anchor" href="#table"><span class="octicon octicon-link"></span></a>Table</h2>
+
+<p>A Table can show a multiple dimensions by multiple metrics. This chart uses the Google Visualization <a href="https://developers.google.com/chart/interactive/docs/gallery/table">Table</a>.</p>
+
+<h4>
+<a name="using-js-3" class="anchor" href="#using-js-3"><span class="octicon octicon-link"></span></a>Using JS</h4>
+
+<ul>
+<li>
+<code>constructor(profile, startDate, endDate)</code> - The Table constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
+<li>
+<code>addMetric(metric, label)</code> - Adds the <code>metric</code> to the Table with the name <code>label</code>.</li>
+<li>
+<code>addDimension(dimension, label)</code> - Adds the <code>dimension</code> to the Table with the name <code>label</code>.</li>
+<li>
+<code>setOptions(opts)</code> -  Overwrites any default options for the Table. See Table chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/table#Configuration_Options">here</a>.</li>
+<li>
+<code>draw(container, callback)</code> - Calling draw will draw the Table into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">'table'</span><span class="nt">&gt;&lt;/div&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+                    <span class="kd">var</span> <span class="nx">table</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Table</span><span class="p">(</span><span class="s2">"{{ YOUR PROFILE ID }}"</span><span class="p">,</span> <span class="s2">"30d"</span><span class="p">);</span>
+
+                    <span class="nx">table</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s2">"ga:visits"</span><span class="p">,</span> <span class="s2">"Visits"</span><span class="p">);</span>
+
+                    <span class="nx">table</span><span class="p">.</span><span class="nx">addDimension</span><span class="p">(</span><span class="s2">"ga:city"</span><span class="p">,</span> <span class="s2">"City"</span><span class="p">);</span>
+
+                    <span class="nx">table</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="s1">'table'</span><span class="p">);</span>
+
+                <span class="p">});</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h4>
+<a name="using-html-attributes-3" class="anchor" href="#using-html-attributes-3"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+
+<p>You may have guessed it: You can create Tables through the HTML API as well.</p>
+
+<ul>
+<li>
+<code>data-oochart</code> - Should always have value of <code>timeline</code> for timelines.</li>
+<li>
+<code>data-oochart-start-date</code> - The beginning date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-end-date</code> - The ending date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-profile</code> - The Google Analytics profile ID.</li>
+<li>
+<code>data-oochart-metrics</code> - A list of comma-deliminated metrics and labels in the format: <code>metric,label,metric,label</code>. Check out the example below.</li>
+<li>
+<code>data-oochart-dimensions</code> - A list of comma-deliminated dimensions and labels in the format: <code>dimension,label,dimension,label</code>. Check out the example below.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'table'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-metrics=</span><span class="s">'ga:visits,Visits'</span> <span class="na">data-oochart-dimensions=</span><span class="s">'ga:city,City'</span> <span class="na">data-oochart-profile=</span><span class="s">'{{ YOUR PROFILE ID }}'</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h2>
+<a name="query" class="anchor" href="#query"><span class="octicon octicon-link"></span></a>Query</h2>
+
+<p>The Query object is the core object of the OOcharts JS. The query object maintains the metrics and dimensions under the charts and executes the API query when <code>draw()</code> is called. The Query can also be used by itself to fetch data from the OOcharts API, allowing you to use any charting library you want.</p>
+
+<ul>
+<li>
+<code>constructor(profile, startDate, endDate)</code> - The Query constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
+<li>
+<code>addMetric(metric)</code> - Adds a <code>metric</code> to the Query.</li>
+<li>
+<code>addDimension(dimension)</code> - Adds a <code>dimension</code> to the Query.</li>
+<li>
+<code>clearMetrics()</code> - Clears all metrics on the Query.</li>
+<li>
+<code>clearDimensions()</code> - Clears all dimensions on the Query.</li>
+<li>
+<code>setFilters(filters)</code> - Sets the <code>filters</code> string for the Query.</li>
+<li>
+<code>setSort(sort)</code> - Sets the <code>sort</code> string for the Query.</li>
+<li>
+<code>setSegment(segment)</code> - Sets the <code>segment</code> string for the Query.</li>
+<li>
+<code>setIndex(index)</code> - Sets the starting <code>index</code> for Query results (default: 0).</li>
+<li>
+<code>setMaxResults(maxResults)</code> - Sets the <code>maxResults</code> for the Query.</li>
+<li>
+<code>execute(callback)</code> - Executes the Query, and returns <code>data</code> as the sole parameter in the passed <code>callback</code> function.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+                    <span class="kd">var</span> <span class="nx">query</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Query</span><span class="p">(</span><span class="s1">'{{ YOUR PROFILE ID}}'</span><span class="p">,</span> <span class="s1">'30d'</span><span class="p">);</span>
+                    <span class="nx">query</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s1">'ga:visits'</span><span class="p">);</span>
+                    <span class="nx">query</span><span class="p">.</span><span class="nx">addDimension</span><span class="p">(</span><span class="s1">'ga:date'</span><span class="p">);</span>
+                    <span class="nx">query</span><span class="p">.</span><span class="nx">addSort</span><span class="p">(</span><span class="s1">'-ga:visits'</span><span class="p">);;</span>
+                    <span class="nx">query</span><span class="p">.</span><span class="nx">execute</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+                        <span class="nx">alert</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+                    <span class="p">});</span>
+
+                <span class="p">});</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h2>
+<a name="advanced-chartquery-options" class="anchor" href="#advanced-chartquery-options"><span class="octicon octicon-link"></span></a>Advanced Chart/Query Options</h2>
+
+<p>You may want to add more complex behaviour to your charts (such as adding a filter to your Timeline). This is actually really easy. Under each charting object is a Query (above). You can set the properties on the query under the chart before drawing it to achieve more complex charts:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">timeline</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Timeline</span><span class="p">(</span><span class="nx">profile</span><span class="p">,</span> <span class="nx">startDate</span><span class="p">,</span> <span class="nx">endDate</span><span class="p">);</span>
+
+<span class="nx">timeline</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s1">'ga:visits'</span><span class="p">,</span> <span class="s1">'Visits'</span><span class="p">);</span>
+<span class="nx">timeline</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">setFilter</span><span class="p">(</span><span class="s1">'ga:visits&gt;100'</span><span class="p">);</span> <span class="c1">//access query object</span>
+
+<span class="nx">timeline</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="nx">container</span><span class="p">);</span>
+</pre></div>
+
+<h2>
+<a name="helper-methods" class="anchor" href="#helper-methods"><span class="octicon octicon-link"></span></a>Helper Methods</h2>
+
+<p>There are a couple public facing methods on the <code>oo</code> object which we've included to make your quest for chart greatness easier.</p>
+
+<ul>
+<li>
+<code>oo.formatDate(date)</code> - Formats <code>date</code> into the acceptable GA format (YYYY-MM-DD);</li>
+<li>
+<code>oo.parseDate(val)</code> - Parses a GA date string into a Javascript date object.</li>
+</ul><h2>
+<a name="theming" class="anchor" href="#theming"><span class="octicon octicon-link"></span></a>Theming</h2>
+
+<p>You probably want to throw your own styles on the charts, right? You can do this through the <code>setOptions()</code> method that all of the charts have, but this would be cumbersome. Thank goodness there are some default options to set!</p>
+
+<ul>
+<li>
+<code>oo.setTimelineDefaults(opts)</code> - Sets the default options of all new Timelines to <code>opts</code>.</li>
+<li>
+<code>oo.setTableDefaults(opts)</code> - Sets the default options of all new Tables to <code>opts</code>.</li>
+<li>
+<code>oo.setPieDefaults(opts)</code> - Sets the default options of all new Pies to <code>opts</code>.</li>
+</ul><p>This is especially helpful if you want to stick to the HTML API. Set your defaults before the load call, and all HTML Attribute charts will pick up those defaults.</p>
+
+<h1>
+<a name="oocharts-api" class="anchor" href="#oocharts-api"><span class="octicon octicon-link"></span></a>OOcharts API</h1>
+
+<p>Ah, so you want to drive stick huh? The OOcharts API is powerful all on its own, despite the cool looking chart library we include. This section will describe the two API endpoints and how to take advantage of them from Javascript in the browser or application code running on your server (cool, right?).</p>
+
+<h2>
+<a name="general" class="anchor" href="#general"><span class="octicon octicon-link"></span></a>General</h2>
+
+<p>All OOcharts API endpoints have the general format: <code>/{{version}}/{{action}}.{{type}}</code>. The <code>version</code> dictates the API version (current <code>v1</code>), the action describes the action <code>query</code> or <code>dynamic</code>, and finally the <code>type</code> dictates a response of <code>json</code> or <code>jsonp</code>.</p>
+
+<p>An example query call with a JSON response: <code>/v1/query.json</code></p>
+
+<p>An example dynamic call with a JSONP response: <code>/v1/dynamic.jsonp</code></p>
+
+<p>It should be noted that all <code>jsonp</code> response types will use the <code>callback</code> query string parameter.</p>
+
+<h4>
+<a name="responses" class="anchor" href="#responses"><span class="octicon octicon-link"></span></a>Responses</h4>
+
+<p>Responses from either endpoint follow the format:</p>
+
+<div class="highlight"><pre><span class="c1">// successful response</span>
+<span class="p">{</span>
+    <span class="s2">"column_headers"</span><span class="o">:</span><span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">"name"</span><span class="o">:</span><span class="s2">"ga:date"</span><span class="p">,</span>
+            <span class="s2">"columnType"</span><span class="o">:</span><span class="s2">"DIMENSION"</span><span class="p">,</span>
+            <span class="s2">"dataType"</span><span class="o">:</span><span class="s2">"STRING"</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">"name"</span><span class="o">:</span><span class="s2">"ga:visits"</span><span class="p">,</span>
+            <span class="s2">"columnType"</span><span class="o">:</span><span class="s2">"METRIC"</span><span class="p">,</span>
+            <span class="s2">"dataType"</span><span class="o">:</span><span class="s2">"NUMBER"</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+    <span class="p">,</span> <span class="s2">"rows"</span><span class="o">:</span><span class="p">[]</span> <span class="c1">//Data rows in here</span>
+    <span class="p">,</span> <span class="s2">"total_results"</span><span class="o">:</span> <span class="mi">32</span>
+<span class="p">}</span>
+
+<span class="c1">// error response</span>
+<span class="p">{</span>
+    <span class="s2">"error"</span><span class="o">:</span><span class="s2">"Invalid param {key}: API Key is invalid"</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<h2>
+<a name="query-1" class="anchor" href="#query-1"><span class="octicon octicon-link"></span></a>Query</h2>
+
+<p><code>GET /v1/query.json</code> or <code>GET /v1/query.jsonp</code></p>
+
+<p>This endpoint is used to interact with the <code>Query</code> object in Mission Control.</p>
+
+<h4>
+<a name="query-strings" class="anchor" href="#query-strings"><span class="octicon octicon-link"></span></a>Query Strings</h4>
+
+<ul>
+<li>
+<code>key</code> - <em>(required)</em> Your API Key. This must have access to the Google Analytics profile used by the query.</li>
+<li>
+<code>start</code> - <em>(required)</em> Start date of query. Should be in format <code>YYYY-MM-DD</code> or in relative date format described in <em>Basics</em>.</li>
+<li>
+<code>end</code> - <em>(optional)</em> End date of query. Should be in format <code>YYYY-MM-DD</code> or in relative date format described in <em>Basics</em>. If no date is given, the current date of the Google Analytics profile's timezone (pretty snazzy huh?) will be used.</li>
+<li>
+<code>query</code> - <em>(required)</em> The query slug of the Mission Control Query.</li>
+<li>
+<code>page</code> - <em>(optional)</em> The page number of the results. Useful when using the Page Size setting of a Mission Control Query.</li>
+<li>
+<code>filters</code> - <em>(optional)</em> A qualified Google Analytics filter string.</li>
+<li>
+<code>callback</code> - <em>(optional)</em> Only necessary when using JSONP response type.</li>
+</ul><h2>
+<a name="dynamic" class="anchor" href="#dynamic"><span class="octicon octicon-link"></span></a>Dynamic</h2>
+
+<p><code>GET /v1/dynamic.json</code> or <code>GET /v1/dynamic.jsonp</code></p>
+
+<p>This endpoint is used for dynamic access to your GA profiles. This is also the endpoint used by the charting library.</p>
+
+<h4>
+<a name="query-strings-1" class="anchor" href="#query-strings-1"><span class="octicon octicon-link"></span></a>Query Strings</h4>
+
+<ul>
+<li>
+<code>key</code> - <em>(required)</em> Your API Key. This must have access to the Google Analytics profile used by the query.</li>
+<li>
+<code>profile</code> - <em>(required)</em> The Google Analytics profile ID.</li>
+<li>
+<code>start</code> - <em>(required)</em> Start date of query. Should be in format <code>YYYY-MM-DD</code> or in relative date format described in <em>Basics</em>.</li>
+<li>
+<code>end</code> - <em>(optional)</em> End date of query. Should be in format <code>YYYY-MM-DD</code> or in relative date format described in <em>Basics</em>. If no date is given, the current date of the Google Analytics profile's timezone (pretty snazzy huh?) will be used.</li>
+<li>
+<code>metrics</code> - <em>(required)</em> A list of valid Google Analytics metrics deliminated by <code>,</code>.</li>
+<li>
+<code>dimensions</code> - <em>(optional)</em> A list of valid Google Analytics dimensions deliminated by <code>,</code>.</li>
+<li>
+<code>sort</code> - <em>(optional)</em> A list of valid Google Analytics sort parameters deliminated by <code>,</code>.</li>
+<li>
+<code>segment</code> - <em>(optional)</em> A valid Google Analytics segment string.</li>
+<li>
+<code>filters</code> - <em>(optional)</em> A qualified Google Analytics filter string.</li>
+<li>
+<code>index</code> - <em>(optional)</em> The starting index of the query results.</li>
+<li>
+<code>maxResults</code> - <em>(optional)</em> The max results for the query.</li>
+<li>
+<code>callback</code> - <em>(optional)</em> Only necessary when using JSONP response type.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/OOcharts">OOcharts</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
