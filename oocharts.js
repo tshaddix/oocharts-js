@@ -5,6 +5,85 @@ var oo = (function(document){
 
 	var _chartColors = ['#1abc9c', '#363f48', '#2ecc71'];
 
+	var _autoBuild = function(){
+		var getAllElementsWithAttribute = function(attribute){
+			var matchingElements = [];
+			var allElements = document.getElementsByTagName('*');
+			for (var i = 0; i < allElements.length; i++){
+				if (allElements[i].getAttribute(attribute)){
+					// Element exists with attribute. Add to array.
+					matchingElements.push(allElements[i]);
+				}
+			}
+			return matchingElements;
+		};
+
+		var elements = getAllElementsWithAttribute('data-oochart');
+
+		for(var e = 0; e < elements.length; e++){
+
+			var _element = elements[e];
+
+			var type  = _element.getAttribute('data-oochart');
+			var startDate = _element.getAttribute('data-oochart-start-date');
+			var endDate = _element.getAttribute('data-oochart-end-date');
+			var profile = _element.getAttribute('data-oochart-profile');
+
+			if(type.toLowerCase() === 'metric'){
+				var metric = new _Metric(profile, startDate, endDate);
+				metric.setMetric(_element.getAttribute('data-oochart-metric'));
+				metric.draw(_element);
+
+			} else if (type.toLowerCase() === 'timeline'){
+				var timeline = new Timeline(profile, startDate, endDate);
+
+				var metricsString = _element.getAttribute('data-oochart-metrics');
+				var metrics = metricsString.split(',');
+
+				for(var m = 0; m < metrics.length; m++){
+					timeline.addMetric(metrics[m], metrics[m+1]);
+					m=m+1;
+				}
+
+				timeline.draw(_element);
+
+			} else if (type.toLowerCase() === 'pie'){
+				var pie = new Pie(profile, startDate, endDate);
+
+				var metricString = _element.getAttribute('data-oochart-metric');
+				var dimension = _element.getAttribute('data-oochart-dimension');
+
+				var metric = metricsString.split(',');
+
+				pie.setMetric(metric[0], metric[1]);
+				pie.setDimension(dimension);
+
+				pie.draw(_element);
+
+			} else if (type.toLowerCase() === 'table'){
+				var table = new Table(profile, startDate, endDate);
+
+				var metricString = _element.getAttribute('data-oochart-metrics');
+				var dimensionString = _element.getAttribute('data-oochart-dimensions');
+
+				var metrics = metricString.split(',');
+				var dimensions = dimensionString.split(',');
+
+				for(var m = 0; m < metrics.length; m++){
+					table.addMetric(metrics[m], metrics[m+1]);
+					m += 1;
+				}
+
+				for(var d = 0; d < dimensions.length; d++){
+					table.addDimension(dimensions[d], dimensions[d+1]);
+					d += 1;
+				}
+
+				table.draw(_element);
+			}
+		}
+	};
+
 	var _loadScript = function(src, callback){
 		var s = document.createElement('script');
 		s.type = 'text/javascript';
@@ -59,6 +138,7 @@ var oo = (function(document){
 		load_jsapi(function () {
 			load_visualization(function () {
 	    		cb();
+	    		_autoBuild();
 			});
 		});
 	};
@@ -83,6 +163,10 @@ var oo = (function(document){
 		return  year + '-' + month + '-' + date;
 	};
 
+	var _parseDate = function(val){
+		return new Date(data[r][0].substring(0, 4), data[r][0].substring(5, 7), data[r][0].substring(8, 10));
+	};
+
 	/*------------------------------------------------------------
 	Query
 	-------------------------------------------------------------*/
@@ -90,6 +174,9 @@ var oo = (function(document){
 	var _Query = function(profile, startDate, endDate) {
 		this.metrics = [];
 		this.dimensions = [];
+		
+		if(!profile) throw new Error("Profile argument required");
+
 		this.profile = profile;
 
 		startDate = startDate || new Date();
@@ -163,6 +250,9 @@ var oo = (function(document){
 
 		query.key = _apiKey;
 		query.profile = this.profile;
+
+		if(this.metrics.length === 0) throw new Error("At least one metric is required");
+
 		query.metrics = this.metrics.toString();
 		query.start = this.startDate;
 		query.end = this.endDate;
@@ -210,7 +300,13 @@ var oo = (function(document){
 	_Metric.prototype.draw = function(container, fn){
 		this.query.execute(function(response){
 
-			document.getElementById(container).innerHTML = response.rows[0][0].toString();
+			var element;
+
+			if(container instanceof String){
+				element = document.getElementById(container);
+			}
+
+			element.innerHTML = response.rows[0][0].toString();
 
 			if(typeof fn !== 'undefined'){
 				fn();
@@ -251,7 +347,7 @@ var oo = (function(document){
 
 			//Turn analytics date strings into date
 			for (var r = 0; r < data.length; r++) {
-				data[r][0] = new Date(data[r][0].substring(0, 4), data[r][0].substring(5, 7), data[r][0].substring(8, 10));
+				data[r][0] =_parseDate(data[r][0]);
 			}
 
 			var dt = new google.visualization.DataTable();
@@ -264,7 +360,13 @@ var oo = (function(document){
 
 			dt.addRows(data);
 
-			var chart = new google.visualization.LineChart(document.getElementById(container));
+			var element;
+
+			if(container instanceof String){
+				element = document.getElementById(container);
+			}
+
+			var chart = new google.visualization.LineChart(element);
 			chart.draw(dt, t.options);
 
 			if (typeof fn != 'undefined') {
@@ -313,7 +415,13 @@ var oo = (function(document){
 			dt.addColumn('number', p.metricLabel);
 			dt.addRows(data);
 
-			var chart = new google.visualization.PieChart(document.getElementById(container));
+			var element;
+
+			if(container instanceof String){
+				element = document.getElementById(container);
+			}
+
+			var chart = new google.visualization.PieChart(element);
 			chart.draw(dt, p.options);
 
 			if (typeof fn != 'undefined') {
@@ -372,7 +480,13 @@ var oo = (function(document){
 
 			var dt = google.visualization.arrayToDataTable(data);
 
-			var chart = new google.visualization.Table(document.getElementById(container));
+			var element;
+
+			if(container instanceof String){
+				element = document.getElementById(container);
+			}
+
+			var chart = new google.visualization.Table(element);
 			chart.draw(dt, t.options);
 
 			if (typeof fn != 'undefined') {
@@ -386,15 +500,16 @@ var oo = (function(document){
 	-------------------------------------------------------------*/
 
 	return {
-		setAPIKey : _setAPIKey,
-		setChartColors : _setChartColors,
 		Query : _Query,
 		Timeline : _Timeline,
 		Metric : _Metric,
 		Pie : _Pie,
 		Table : _Table,
 		load : _load,
-		formatDate : _formatDate
+		formatDate : _formatDate,
+		parseDate : _parseDate,
+		setAPIKey : _setAPIKey,
+		setChartColors : _setChartColors
 	};
 
 })(document);
