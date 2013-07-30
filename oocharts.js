@@ -3,7 +3,11 @@ var oo = (function(document){
 	var _serviceEndpoint = "http://localhost:4000/v1/dynamic.jsonp";
 	var _apiKey = undefined;
 
-	var _chartColors = ['#1abc9c', '#363f48', '#2ecc71'];
+	var _defaultTimelineOptions = {};
+
+	var _defaultPieOptions = {};
+
+	var _defaultTableOptions = {};
 
 	var _autoBuild = function(){
 		var getAllElementsWithAttribute = function(attribute){
@@ -149,8 +153,16 @@ var oo = (function(document){
 		_apiKey = key;
 	};
 
-	var _setChartColors = function(colors){
-		_chartColors = colors;
+	var _setTimelineDefaults = function(opts){
+		_defaultTimelineOptions = opts;
+	};
+
+	var _setPieDefaults = function(opts){
+		_defaultPieOptions = opts;
+	};
+
+	var _setTableDefaults = function(opts){
+		_defaultTableOptions = opts;
 	};
 
 	var _formatDate = function(date){
@@ -328,9 +340,7 @@ var oo = (function(document){
 	
 		this.labels = [];
 	
-		this.options = {
-			colors : _chartColors
-		};
+		this.options = _defaultTimelineOptions;
 	};
 
 	_Timeline.prototype.setOptions = function(opts){
@@ -386,9 +396,7 @@ var oo = (function(document){
 	-------------------------------------------------------------*/
 	var _Pie = function(profile, startDate, endDate){
 		this.query = new _Query(profile, startDate, endDate);
-		this.options = {
-			colors : _chartColors
-		};
+		this.options = _defaultPieOptions;
 	};
 
 	_Pie.prototype.setMetric = function(metric, label){
@@ -450,7 +458,7 @@ var oo = (function(document){
 		this.metricLabels = [];
 		this.dimensionLabels = [];
 
-		this.options = {};
+		this.options = _defaultTableOptions;
 	};
 
 	_Table.prototype.addMetric = function(metric, label){
