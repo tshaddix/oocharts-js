@@ -3,10 +3,10 @@
 OOcharts is an awesome little project that makes it easy to embed and share Google Analytics data through charts. It was started in the Summer of 2012 by [Tin Bin](http://tinb.in) and continues to grow. There are a few basics you need to know in order to get started:
 
 ###API Keys###
-API Keys are created to give access to certain Google Analytics profiles. For every request to OOcharts, you will need a valid API Key. These keys can be created in [Mission Control](https://app.oocharts.com/key/list).
+API Keys are created to give access to certain Google Analytics profiles. For every request to OOcharts, you will need a valid API Key. These keys can be created in [Mission Control](https://app.oocharts.com/mc/key/list).
 
 ###Queries###
-Queries are packaged requests that are prebuilt on [Mission Control](https://app.oocharts.com/query/list). Altough the API supports dynamic requests, Queries are useful for security. Queries restrict the parameters sent to Google Analytics and hide the Analytics profile ID. Users who want to display certain data on their site while also ensuring other parameters can not be retrieved should use Queries instead of the dynamic API.
+Queries are packaged requests that are prebuilt on [Mission Control](https://app.oocharts.com/mc/query/list). Altough the API supports dynamic requests, Queries are useful for security. Queries restrict the parameters sent to Google Analytics and hide the Analytics profile ID. Users who want to display certain data on their site while also ensuring other parameters can not be retrieved should use Queries instead of the dynamic API.
 
 #OOcharts JS#
 
@@ -80,9 +80,9 @@ Metrics are the simplest charting object which replace the inner HTML content of
 ####Using JS####
 Metrics can easily be created through the JSAPI under the `oo` object.
 
--`constructor(profile, startDate, endDate)` - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
--`setMetric(metric)` - Just as the method name states, this sets the metric to load. This should be a valid Google Analytics metric name, such as `"ga:visits"`; 
--`draw(container, callback)` - Calling draw will draw the metric into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `constructor(profile, startDate, endDate)` - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+- `setMetric(metric)` - Just as the method name states, this sets the metric to load. This should be a valid Google Analytics metric name, such as `"ga:visits"`; 
+- `draw(container, callback)` - Calling draw will draw the metric into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
 
 Here is a quick example of using a metric to show visits through the JS API. Normally, you would replace the `{{}}` content with your information.
 
@@ -122,8 +122,9 @@ You can also easily create Metrics through the HTML Attribute API.
 
 - `data-oochart` - For a metric, this should always have a value of `metric`.
 - `data-oochart-metric` - Value of the metric to query.
+- `data-oochart-profile` - The Google Analytics profile ID.
 - `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
--`data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
 
 Once `oo.load` is called successfully, the HTML element content will be replaced with the query results.
 
@@ -150,6 +151,77 @@ Once `oo.load` is called successfully, the HTML element content will be replaced
 ```
 
 ###Timeline###
+A timeline is a Google Visualization [line chart](https://developers.google.com/chart/interactive/docs/gallery/linechart) which shows metric values over a date range.
+
+####Using JS####
+
+- `constructor(profile, startDate, endDate)` - The Timeline constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+- `addMetric(metric, label)` - Adds the `metric` to the timeline with the name `label`.
+- `setOptions(opts)` -  Overwrites any default options for the timeline. See line chart options [here](https://developers.google.com/chart/interactive/docs/gallery/linechart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the timeline.
+- `draw(container, callback)` - Calling draw will draw the Timeline into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='chart'></div>		
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+
+					var timeline = new oo.Timeline("{{ YOUR PROFILE ID }}", "30d");
+
+					timeline.addMetric("ga:visits", "Visits");
+
+					timeline.addMetric("ga:newVisits", "New Visits");
+
+					timeline.draw('chart');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
+```
+
+####Using HTML Attributes####
+You can also easily create Timelines through the HTML Attribute API as well.
+
+- `data-oochart` - Should always have value of `timeline` for timelines.
+- `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-profile` - The Google Analytics profile ID.
+- `data-oochart-metrics` - A list of comma-deliminated metrics in the format: `metric,label,metric,label`. Check our the example below.
+
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div data-oochart='timeline' data-oochart-start-date='30d' data-oochart-metrics='ga:visits,Visits,ga:newVisits,New Visits' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+		
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load();
+			};
+
+		</script>
+	</body>
+</html>
+```
 
 ###Pie###
 
@@ -158,6 +230,8 @@ Once `oo.load` is called successfully, the HTML element content will be replaced
 ###Query###
 
 ###Helper Methods###
+
+###Theming###
 
 There are a couple public facing methods on the `oo` object which we've included to make your quest for chart greatness easier.
 
