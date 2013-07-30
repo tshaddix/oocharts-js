@@ -30,6 +30,8 @@ The OOcharts JS script is a single file. It can be downloaded from the GitHub re
 	<script src='oocharts.js'></script>
 ```
 
+Once the script has loaded, you will have access to the `oo` object which houses all the Goodies to create OOcharts.
+
 ###Basics###
 All OOcharts JS objects work with a few basic principals:
 
@@ -73,8 +75,16 @@ OOcharts uses the [Google Visualization Library](https://developers.google.com/c
 Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.
 
 ###Metric###
+Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.
 
 ####Using JS####
+Metrics can easily be created through the JSAPI under the `oo` object.
+
+-`constructor(profile, startDate, endDate)` - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+-`setMetric(metric)` - Just as the method name states, this sets the metric to load. This should be a valid Google Analytics metric name, such as `"ga:visits"`; 
+-`draw(container, callback)` - Calling draw will draw the metric into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+
+Here is a quick example of using a metric to show visits through the JS API. Normally, you would replace the `{{}}` content with your information.
 
 ```html
 <html>
@@ -108,8 +118,16 @@ Once the load callback has fired, you are ready to begin using OOcharts. The loa
 ```
 
 ####Using HTML Attributes####
+You can also easily create Metrics through the HTML Attribute API.
 
-```
+- `data-oochart` - For a metric, this should always have a value of `metric`.
+- `data-oochart-metric` - Value of the metric to query.
+- `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+-`data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+
+Once `oo.load` is called successfully, the HTML element content will be replaced with the query results.
+
+```html
 <html>
 	<head>
 	</head>
