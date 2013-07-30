@@ -68,11 +68,68 @@ OOcharts uses the [Google Visualization Library](https://developers.google.com/c
 	};
 </script>
 
-Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.
-
 ```
 
+Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.
+
 ###Metric###
+
+####Using JS####
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		
+		Visits : <span id='metric'></span>
+		
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+
+					var metric = new oo.Metric("{{ YOUR PROFILE ID }}", "30d");
+
+					metric.setMetric("ga:visits");
+
+					metric.draw('metric');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
+```
+
+####Using HTML Attributes####
+
+```
+<html>
+	<head>
+	</head>
+	<body>
+		New Visits : <span data-oochart='metric' data-oochart-metric='ga:newVisits' data-oochart-start-date='30d' data-oochart-profile='{{ YOUR PROFILE ID }}'></span>
+		
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load();
+			};
+
+		</script>
+	</body>
+</html>
+```
 
 ###Timeline###
 
@@ -82,4 +139,10 @@ Once the load callback has fired, you are ready to begin using OOcharts. The loa
 
 ###Query###
 
+###Helper Methods###
+
+There are a couple public facing methods on the `oo` object which we've included to make your quest for chart greatness easier.
+
 #OOcharts API#
+
+Ah, so you want to drive stick huh? The OOcharts API is powerful all on its own, despite the cool looking chart library we include. This section will describe the two API endpoints and how to take advantage of them from Javascript in the browser or application code running on your server (cool, right?).

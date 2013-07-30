@@ -1,6 +1,6 @@
 var oo = (function(document){
 
-	var _serviceEndpoint = "http://localhost:4000/v1/dynamic.jsonp";
+	var _serviceEndpoint = "https://api.oocharts.com/v1/dynamic.jsonp";
 	var _apiKey = undefined;
 
 	var _defaultTimelineOptions = {};
@@ -9,35 +9,47 @@ var oo = (function(document){
 
 	var _defaultTableOptions = {};
 
+	/*
+	 * Binds OOcharts Objects to DOM Elements based on HTML attributes
+	 */
 	var _autoBuild = function(){
+
+		/*
+		 * Gets all elements containing value for specified attribute
+		 * @param {String} attribute
+		 * @return {Array} matchingElements
+		 */
 		var getAllElementsWithAttribute = function(attribute){
 			var matchingElements = [];
 			var allElements = document.getElementsByTagName('*');
 			for (var i = 0; i < allElements.length; i++){
 				if (allElements[i].getAttribute(attribute)){
-					// Element exists with attribute. Add to array.
 					matchingElements.push(allElements[i]);
 				}
 			}
 			return matchingElements;
 		};
 
+		// find all oocharts elements
 		var elements = getAllElementsWithAttribute('data-oochart');
 
 		for(var e = 0; e < elements.length; e++){
 
 			var _element = elements[e];
 
+			//get oocharts data
 			var type  = _element.getAttribute('data-oochart');
 			var startDate = _element.getAttribute('data-oochart-start-date');
 			var endDate = _element.getAttribute('data-oochart-end-date');
 			var profile = _element.getAttribute('data-oochart-profile');
 
+			// if metric
 			if(type.toLowerCase() === 'metric'){
 				var metric = new _Metric(profile, startDate, endDate);
 				metric.setMetric(_element.getAttribute('data-oochart-metric'));
 				metric.draw(_element);
 
+			//if timeline
 			} else if (type.toLowerCase() === 'timeline'){
 				var timeline = new _Timeline(profile, startDate, endDate);
 
@@ -51,6 +63,7 @@ var oo = (function(document){
 
 				timeline.draw(_element);
 
+			//if pie
 			} else if (type.toLowerCase() === 'pie'){
 				var pie = new _Pie(profile, startDate, endDate);
 
@@ -64,6 +77,7 @@ var oo = (function(document){
 
 				pie.draw(_element);
 
+			//if table
 			} else if (type.toLowerCase() === 'table'){
 				var table = new _Table(profile, startDate, endDate);
 
@@ -85,9 +99,16 @@ var oo = (function(document){
 
 				table.draw(_element);
 			}
+
+			//else ignore and continue
 		}
 	};
 
+	/*
+	 * Loads a specified script and fires callback when finished
+	 * @param {String} src
+	 * @param {Function} callback
+	 */
 	var _loadScript = function(src, callback){
 		var s = document.createElement('script');
 		s.type = 'text/javascript';
@@ -108,9 +129,14 @@ var oo = (function(document){
 		c.parentNode.insertBefore(s, c);
 	};
 
+	/*
+	 * Loads OOcharts dependencies
+	 * @param {Function} callback
+	 */
 	var  _load = function(callback){
 		if(!_apiKey) throw "Set APIKey with oo.setAPIKey before calling load";
 
+		// load JSAPI
 		var load_jsapi = function (callback) {
 			if (typeof google === 'undefined') {
 				_loadScript("https://www.google.com/jsapi", callback);
@@ -118,6 +144,7 @@ var oo = (function(document){
 			else { callback(); }
 		};
 
+		// load Google Visualization
 		var load_visualization = function (callback) {
 			if (typeof google.visualization === 'undefined') {
 				google.load("visualization", "1", { packages: ['corechart', 'table'], 'callback': callback });
@@ -144,27 +171,50 @@ var oo = (function(document){
 		load_jsapi(function () {
 			load_visualization(function () {
 	    		cb();
+
+	    		// run autobuild
 	    		_autoBuild();
 			});
 		});
 	};
 
+	/*
+	 * Sets API Key
+	 * @param {String} key
+	 */
 	var _setAPIKey = function(key){
 		_apiKey = key;
 	};
 
+	/*
+	 * Sets Timeline chart default options
+	 * @param {Object} opts
+	 */
 	var _setTimelineDefaults = function(opts){
 		_defaultTimelineOptions = opts;
 	};
 
+	/*
+	 * Sets Pie chart default options
+	 * @param {Object} opts
+	 */
 	var _setPieDefaults = function(opts){
 		_defaultPieOptions = opts;
 	};
 
+	/*
+	 * Sets Table chart default options
+	 * @param {Object} opts
+	 */
 	var _setTableDefaults = function(opts){
 		_defaultTableOptions = opts;
 	};
 
+	/*
+	 * Helper to format Data object to GA standards
+	 * @param {Date} date
+	 * @returns {String} formatted date (YYYY-MM-DD)
+	 */
 	var _formatDate = function(date){
 		var year = date.getFullYear().toString();
 		var month = (date.getMonth() + 1).toString();
@@ -177,14 +227,25 @@ var oo = (function(document){
 		return  year + '-' + month + '-' + date;
 	};
 
+	/*
+	 * Helper to parse GA date to date object
+	 * @param {String} val
+	 * @returns {Date} parsed Date
+	 */
 	var _parseDate = function(val){
 		return new Date(val.substring(0, 4), val.substring(5, 7), val.substring(8, 10));
 	};
 
 	/*------------------------------------------------------------
-	Query
+	Query (Core OOcharts Object)
 	-------------------------------------------------------------*/
 
+	/*
+	 * Query constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
 	var _Query = function(profile, startDate, endDate) {
 		this.metrics = [];
 		this.dimensions = [];
@@ -193,6 +254,7 @@ var oo = (function(document){
 
 		this.profile = profile;
 
+		// validate dates
 		startDate = startDate || new Date();
 		endDate = endDate || new Date();
 
@@ -223,42 +285,80 @@ var oo = (function(document){
 		this.endDate = endDate;
 	};
 
+	/*
+	 * Clears all metrics on Query
+	 */
 	_Query.prototype.clearMetrics = function(){
 		this.metrics = [];
 	};
 
+	/*
+	 * Clears all dimensions on Query
+	 */
 	_Query.prototype.clearDimensions = function(){
 		this.dimensions = [];
 	};
 
+	/*
+	 * Adds a metric to Query
+	 * @param {String} metric
+	 */
 	_Query.prototype.addMetric = function(metric){
 		this.metrics.push(metric);
 	};
 
+	/*
+	 * Adds a dimension to Query
+	 * @param {String} dimension
+	 */
 	_Query.prototype.addDimension = function(dimension){
 		this.dimensions.push(dimension);
 	};
 
+	/*
+	 * Sets filters string for Query
+	 * @param {String} filters
+	 */
 	_Query.prototype.setFilter = function(filters){
 		this.filters = filters;
 	};
 
+	/*
+	 * Sets sort string for Query
+	 * @param {String} sort
+	 */
 	_Query.prototype.setSort = function(sort){
 		this.sort = sort;
 	};
 
+	/*
+	 * Sets segment string for Query
+	 * @param {String} segment
+	 */
 	_Query.prototype.setSegment = function(segment){
 		this.segment = segment;
 	};
 
+	/*
+	 * Sets the beginning index for Query
+	 * @param {Number or String} index
+	 */
 	_Query.prototype.setIndex = function(index){
 		this.index = index;
 	};
 
+	/*
+	 * Sets max results for Query
+	 * @param {Number or String} maxResults
+	 */
 	_Query.prototype.setMaxResults = function(maxResults){
 		this.maxResults = maxResults;
 	};
 
+	/*
+	 * Executes query through JSONP
+	 * @param {Function} callback(data)
+	 */
 	_Query.prototype.execute = function(callback){
 		var query = {};
 
@@ -302,15 +402,30 @@ var oo = (function(document){
 	Metric
 	-------------------------------------------------------------*/
 
+	/*
+	 * Metric constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
 	var _Metric = function(profile, startDate, endDate){
 		this.query = new _Query(profile, startDate, endDate);
 	};
 
+	/*
+	 * Sets the metric
+	 * @param {String} metric
+	 */
 	_Metric.prototype.setMetric = function(metric){
 		this.query.clearMetrics();
 		this.query.addMetric(metric);
 	};
 
+	/*
+	 * Draws metric result in container element
+	 * @param {Element or String} container (or id of container element)
+	 * @param {Function} fn
+	 */
 	_Metric.prototype.draw = function(container, fn){
 		this.query.execute(function(response){
 
@@ -334,6 +449,12 @@ var oo = (function(document){
 	Timeline
 	-------------------------------------------------------------*/
 
+	/*
+	 * Timeline constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
 	var _Timeline = function(profile, startDate, endDate){
 		this.query = new _Query(profile, startDate, endDate);
 		this.query.addDimension('ga:date');
@@ -343,15 +464,29 @@ var oo = (function(document){
 		this.options = _defaultTimelineOptions;
 	};
 
+	/*
+	 * Override default options
+	 * @param {Object} opts
+	 */
 	_Timeline.prototype.setOptions = function(opts){
 		this.options = opts;
 	};
 
+	/*
+	 * Adds a metric to Timeline
+	 * @param {String} metric
+	 * @param {String} label
+	 */
 	_Timeline.prototype.addMetric = function(metric, label){
 		this.labels.push(label);
 		this.query.addMetric(metric);
 	};
 
+	/*
+	 * Draws timeline in container element
+	 * @param {Element or String} container (or id of container element)
+	 * @param {Function} fn
+	 */
 	_Timeline.prototype.draw = function(container, fn){
 		var t = this;
 
@@ -368,10 +503,12 @@ var oo = (function(document){
 
 			dt.addColumn('date', 'Date');
 
+			// Add data column labels
 			for (var l = 0; l < t.labels.length; l++) {
 				dt.addColumn('number', t.labels[l]);
 			}
 
+			// add data
 			dt.addRows(data);
 
 			var element;
@@ -394,27 +531,52 @@ var oo = (function(document){
 	/*------------------------------------------------------------
 	Pie
 	-------------------------------------------------------------*/
+
+	/*
+	 * Pie constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
 	var _Pie = function(profile, startDate, endDate){
 		this.query = new _Query(profile, startDate, endDate);
 		this.options = _defaultPieOptions;
 	};
 
+	/*
+	 * Set metric for Pie
+	 * @param {String} metric
+	 * @param {String} label
+	 */
 	_Pie.prototype.setMetric = function(metric, label){
 		this.metricLabel = label;
 		this.query.clearMetrics();
 		this.query.addMetric(metric);
 	};
 
+	/*
+	 * Set dimension for Pie
+	 * @param {String} dimension
+	 */
 	_Pie.prototype.setDimension = function(dimension){
 		this.query.clearDimensions();
 		this.query.dimensionLabel = dimension;
 		this.query.addDimension(dimension);
 	};
 
+	/*
+	 * Override default pie options
+	 * @param {Object} opts
+	 */
 	_Pie.prototype.setOptions = function(opts){
 		this.options = opts;
 	};
 
+	/*
+	 * Draws pie in container element
+	 * @param {Element or String} container (or id of container element)
+	 * @param {Function} fn
+	 */
 	_Pie.prototype.draw = function(container, fn){
 
 		var p = this;
@@ -452,6 +614,12 @@ var oo = (function(document){
 	Table
 	-------------------------------------------------------------*/
 
+	/*
+	 * Table constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
 	var _Table = function(profile, startDate, endDate){
 		this.query = new _Query(profile, startDate, endDate);
 
@@ -461,20 +629,39 @@ var oo = (function(document){
 		this.options = _defaultTableOptions;
 	};
 
+	/*
+	 * Adds a metric to table
+	 * @param {String} metric
+	 * @param {String} label
+	 */
 	_Table.prototype.addMetric = function(metric, label){
 		this.query.addMetric(metric);
 		this.metricLabels.push(label);
 	};
 
+	/*
+	 * Adds a dimension to table
+	 * @param {String} dimension
+	 * @param {String} label
+	 */
 	_Table.prototype.addDimension = function(dimension, label){
 		this.query.addDimension(dimension);
 		this.dimensionLabels.push(label);
 	};
 
+	/*
+	 * Override default table options
+	 * @param {Object} opts
+	 */
 	_Table.prototype.setOptions = function(opts){
 		this.options = opts;
 	};
 
+	/*
+	 * Draws table in container element
+	 * @param {Element or String} container (or id of container element)
+	 * @param {Function} fn
+	 */
 	_Table.prototype.draw = function(container, fn){
 		var t = this;
 
@@ -527,7 +714,9 @@ var oo = (function(document){
 		formatDate : _formatDate,
 		parseDate : _parseDate,
 		setAPIKey : _setAPIKey,
-		setChartColors : _setChartColors
+		setTimelineDefaults : _setTimelineDefaults,
+		setPieDefaults : _setPieDefaults,
+		setTableDefaults : _setTableDefaults
 	};
 
 })(document);
