@@ -35,7 +35,7 @@ var oo = (function(document){
 				metric.draw(_element);
 
 			} else if (type.toLowerCase() === 'timeline'){
-				var timeline = new Timeline(profile, startDate, endDate);
+				var timeline = new _Timeline(profile, startDate, endDate);
 
 				var metricsString = _element.getAttribute('data-oochart-metrics');
 				var metrics = metricsString.split(',');
@@ -48,12 +48,12 @@ var oo = (function(document){
 				timeline.draw(_element);
 
 			} else if (type.toLowerCase() === 'pie'){
-				var pie = new Pie(profile, startDate, endDate);
+				var pie = new _Pie(profile, startDate, endDate);
 
 				var metricString = _element.getAttribute('data-oochart-metric');
 				var dimension = _element.getAttribute('data-oochart-dimension');
 
-				var metric = metricsString.split(',');
+				var metric = metricString.split(',');
 
 				pie.setMetric(metric[0], metric[1]);
 				pie.setDimension(dimension);
@@ -61,7 +61,7 @@ var oo = (function(document){
 				pie.draw(_element);
 
 			} else if (type.toLowerCase() === 'table'){
-				var table = new Table(profile, startDate, endDate);
+				var table = new _Table(profile, startDate, endDate);
 
 				var metricString = _element.getAttribute('data-oochart-metrics');
 				var dimensionString = _element.getAttribute('data-oochart-dimensions');
@@ -105,6 +105,8 @@ var oo = (function(document){
 	};
 
 	var  _load = function(callback){
+		if(!_apiKey) throw "Set APIKey with oo.setAPIKey before calling load";
+
 		var load_jsapi = function (callback) {
 			if (typeof google === 'undefined') {
 				_loadScript("https://www.google.com/jsapi", callback);
@@ -164,7 +166,7 @@ var oo = (function(document){
 	};
 
 	var _parseDate = function(val){
-		return new Date(data[r][0].substring(0, 4), data[r][0].substring(5, 7), data[r][0].substring(8, 10));
+		return new Date(val.substring(0, 4), val.substring(5, 7), val.substring(8, 10));
 	};
 
 	/*------------------------------------------------------------
@@ -302,8 +304,10 @@ var oo = (function(document){
 
 			var element;
 
-			if(container instanceof String){
+			if(typeof container === 'string'){
 				element = document.getElementById(container);
+			} else {
+				element = container;
 			}
 
 			element.innerHTML = response.rows[0][0].toString();
@@ -362,8 +366,10 @@ var oo = (function(document){
 
 			var element;
 
-			if(container instanceof String){
+			if(typeof container === 'string'){
 				element = document.getElementById(container);
+			} else {
+				element = container;
 			}
 
 			var chart = new google.visualization.LineChart(element);
@@ -417,8 +423,10 @@ var oo = (function(document){
 
 			var element;
 
-			if(container instanceof String){
+			if(typeof container === 'string'){
 				element = document.getElementById(container);
+			} else {
+				element = container;
 			}
 
 			var chart = new google.visualization.PieChart(element);
@@ -482,8 +490,10 @@ var oo = (function(document){
 
 			var element;
 
-			if(container instanceof String){
+			if(typeof container === 'string'){
 				element = document.getElementById(container);
+			} else {
+				element = container;
 			}
 
 			var chart = new google.visualization.Table(element);

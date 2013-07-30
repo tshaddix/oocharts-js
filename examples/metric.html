@@ -2,17 +2,22 @@
 	<head>
 	</head>
 	<body>
-		<div id='metric'></div>
+		<h3>With JS</h3>
+		Visits : <span id='metric'></span>
+		
+		<h3>With HTML Attributes</h3>
+		New Visits : <span data-oochart='metric' data-oochart-metric='ga:newVisits' data-oochart-start-date='30d' data-oochart-profile='{{ YOUR PROFILE ID }}'></span>
+		
 		<script src='../oocharts.js'></script>
 		<script type="text/javascript">
 
 			window.onload = function(){
 
-				oo.setAPIKey("Your API Key");
+				oo.setAPIKey("{{ YOUR API KEY }}");
 
 				oo.load(function(){
 
-					var metric = new oo.Metric("Your Profile Id", "30d");
+					var metric = new oo.Metric("{{ YOUR PROFILE ID }}", "30d");
 
 					metric.setMetric("ga:visits");
 

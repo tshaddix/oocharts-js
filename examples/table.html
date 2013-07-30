@@ -2,23 +2,26 @@
 	<head>
 	</head>
 	<body>
+		<h3>With JS</h3>
 		<div id='table'></div>
+
+		<h3>With HTML Attributes</h3>
+		<div data-oochart='table' data-oochart-start-date='30d' data-oochart-metrics='ga:visits,Visits' data-oochart-dimensions='ga:city,City' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+
 		<script src='../oocharts.js'></script>
 		<script type="text/javascript">
 
 			window.onload = function(){
 
-				oo.setAPIKey("Your API Key");
+				oo.setAPIKey("{{ YOUR API KEY }}");
 
 				oo.load(function(){
 
-					var table = new oo.Table("Your Profile Id", "30d");
+					var table = new oo.Table("{{ YOUR PROFILE ID }}", "30d");
 
 					table.addMetric("ga:visits", "Visits");
 
 					table.addDimension("ga:city", "City");
-
-					table.query.setSort('-ga:visits');
 
 					table.draw('table');
 

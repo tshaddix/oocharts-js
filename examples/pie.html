@@ -2,17 +2,22 @@
 	<head>
 	</head>
 	<body>
+		<h3>With JS</h3>
 		<div id='pie'></div>
+
+		<h3>With HTML Attributes</h3>
+		<div data-oochart='pie' data-oochart-start-date='30d' data-oochart-metric='ga:visits,Visits' data-oochart-dimension='ga:browser' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+
 		<script src='../oocharts.js'></script>
 		<script type="text/javascript">
 
 			window.onload = function(){
 
-				oo.setAPIKey("Your API Key");
+				oo.setAPIKey("{{ YOUR API KEY }}");
 
 				oo.load(function(){
 
-					var pie = new oo.Pie("Your Profile Id", "30d");
+					var pie = new oo.Pie("{{ YOUR PROFILE ID }}", "30d");
 
 					pie.setMetric("ga:visits", "Visits");
 					pie.setDimension("ga:browser");
