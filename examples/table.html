@@ -2,7 +2,7 @@
 	<head>
 	</head>
 	<body>
-		<div id='chart'></div>
+		<div id='table'></div>
 		<script src='../oocharts.js'></script>
 		<script type="text/javascript">
 
@@ -12,13 +12,15 @@
 
 				oo.load(function(){
 
-					var timeline = new oo.Timeline("Your Profile Id", "30d");
+					var table = new oo.Table("Your Profile Id", "30d");
 
-					timeline.addMetric("ga:visits", "Visits");
+					table.addMetric("ga:visits", "Visits");
 
-					timeline.addMetric("ga:newVisits", "New Visits");
+					table.addDimension("ga:city", "City");
 
-					timeline.draw('chart');
+					table.query.setSort('-ga:visits');
+
+					table.draw('table');
 
 				});
 			};

@@ -2,7 +2,7 @@
 	<head>
 	</head>
 	<body>
-		<div id='chart'></div>
+		<div id='metric'></div>
 		<script src='../oocharts.js'></script>
 		<script type="text/javascript">
 
@@ -12,13 +12,11 @@
 
 				oo.load(function(){
 
-					var timeline = new oo.Timeline("Your Profile Id", "30d");
+					var metric = new oo.Metric("Your Profile Id", "30d");
 
-					timeline.addMetric("ga:visits", "Visits");
+					metric.setMetric("ga:visits");
 
-					timeline.addMetric("ga:newVisits", "New Visits");
-
-					timeline.draw('chart');
+					metric.draw('metric');
 
 				});
 			};

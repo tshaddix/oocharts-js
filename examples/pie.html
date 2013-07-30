@@ -2,7 +2,7 @@
 	<head>
 	</head>
 	<body>
-		<div id='chart'></div>
+		<div id='pie'></div>
 		<script src='../oocharts.js'></script>
 		<script type="text/javascript">
 
@@ -12,13 +12,12 @@
 
 				oo.load(function(){
 
-					var timeline = new oo.Timeline("Your Profile Id", "30d");
+					var pie = new oo.Pie("Your Profile Id", "30d");
 
-					timeline.addMetric("ga:visits", "Visits");
+					pie.setMetric("ga:visits", "Visits");
+					pie.setDimension("ga:browser");
 
-					timeline.addMetric("ga:newVisits", "New Visits");
-
-					timeline.draw('chart');
+					pie.draw('pie');
 
 				});
 			};

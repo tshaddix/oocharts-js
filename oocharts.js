@@ -5,12 +5,30 @@ var oo = (function(document){
 
 	var _chartColors = ['#1abc9c', '#363f48', '#2ecc71'];
 
-	var  _load = function(callback){
-		var m = this;
+	var _loadScript = function(src, callback){
+		var s = document.createElement('script');
+		s.type = 'text/javascript';
+		s.src = src;
+		s.async = false;
 
+		s.onreadystatechange = s.onload = function () {
+
+			var state = s.readyState;
+
+			if (!callback.done && (!state || /loaded|complete/.test(state))) {
+				callback.done = true;
+				callback();
+			}
+		};
+
+		var c = document.getElementsByTagName('script')[0];
+		c.parentNode.insertBefore(s, c);
+	};
+
+	var  _load = function(callback){
 		var load_jsapi = function (callback) {
 			if (typeof google === 'undefined') {
-				m.loadScript("https://www.google.com/jsapi", callback);
+				_loadScript("https://www.google.com/jsapi", callback);
 			}
 			else { callback(); }
 		};
@@ -45,28 +63,12 @@ var oo = (function(document){
 		});
 	};
 
-	var _loadScript = function(src, callback){
-		var s = document.createElement('script');
-		s.type = 'text/javascript';
-		s.src = src;
-		s.async = false;
-
-		s.onreadystatechange = s.onload = function () {
-
-			var state = s.readyState;
-
-			if (!callback.done && (!state || /loaded|complete/.test(state))) {
-				callback.done = true;
-				callback();
-			}
-		};
-
-		var c = document.getElementsByTagName('script')[0];
-		c.parentNode.insertBefore(s, c);
-	};
-
 	var _setAPIKey = function(key){
 		_apiKey = key;
+	};
+
+	var _setChartColors = function(colors){
+		_chartColors = colors;
 	};
 
 	var _formatDate = function(date){
@@ -118,6 +120,14 @@ var oo = (function(document){
 
 		this.startDate = startDate;
 		this.endDate = endDate;
+	};
+
+	_Query.prototype.clearMetrics = function(){
+		this.metrics = [];
+	};
+
+	_Query.prototype.clearDimensions = function(){
+		this.dimensions = [];
 	};
 
 	_Query.prototype.addMetric = function(metric){
@@ -185,21 +195,46 @@ var oo = (function(document){
 	};
 
 	/*------------------------------------------------------------
+	Metric
+	-------------------------------------------------------------*/
+
+	var _Metric = function(profile, startDate, endDate){
+		this.query = new _Query(profile, startDate, endDate);
+	};
+
+	_Metric.prototype.setMetric = function(metric){
+		this.query.clearMetrics();
+		this.query.addMetric(metric);
+	};
+
+	_Metric.prototype.draw = function(container, fn){
+		this.query.execute(function(response){
+
+			document.getElementById(container).innerHTML = response.rows[0][0].toString();
+
+			if(typeof fn !== 'undefined'){
+				fn();
+			}
+		});
+	};
+
+	/*------------------------------------------------------------
 	Timeline
 	-------------------------------------------------------------*/
+
 	var _Timeline = function(profile, startDate, endDate){
 		this.query = new _Query(profile, startDate, endDate);
 		this.query.addDimension('ga:date');
 	
 		this.labels = [];
 	
-		this.chartOptions = {
+		this.options = {
 			colors : _chartColors
 		};
 	};
 
-	_Timeline.prototype.setChartOptions = function(opts){
-		this.chartOptions = opts;
+	_Timeline.prototype.setOptions = function(opts){
+		this.options = opts;
 	};
 
 	_Timeline.prototype.addMetric = function(metric, label){
@@ -230,7 +265,7 @@ var oo = (function(document){
 			dt.addRows(data);
 
 			var chart = new google.visualization.LineChart(document.getElementById(container));
-			chart.draw(dt, t.chartOptions);
+			chart.draw(dt, t.options);
 
 			if (typeof fn != 'undefined') {
 				fn();
@@ -238,6 +273,113 @@ var oo = (function(document){
 		});
 	};
 
+	/*------------------------------------------------------------
+	Pie
+	-------------------------------------------------------------*/
+	var _Pie = function(profile, startDate, endDate){
+		this.query = new _Query(profile, startDate, endDate);
+		this.options = {
+			colors : _chartColors
+		};
+	};
+
+	_Pie.prototype.setMetric = function(metric, label){
+		this.metricLabel = label;
+		this.query.clearMetrics();
+		this.query.addMetric(metric);
+	};
+
+	_Pie.prototype.setDimension = function(dimension){
+		this.query.clearDimensions();
+		this.query.dimensionLabel = dimension;
+		this.query.addDimension(dimension);
+	};
+
+	_Pie.prototype.setOptions = function(opts){
+		this.options = opts;
+	};
+
+	_Pie.prototype.draw = function(container, fn){
+
+		var p = this;
+
+		this.query.execute(function(response){
+
+			var data = response.rows;
+
+			var dt = new google.visualization.DataTable();
+
+			dt.addColumn('string', p.dimensionLabel);
+			dt.addColumn('number', p.metricLabel);
+			dt.addRows(data);
+
+			var chart = new google.visualization.PieChart(document.getElementById(container));
+			chart.draw(dt, p.options);
+
+			if (typeof fn != 'undefined') {
+				fn();
+			}
+
+		});
+
+	};
+
+	/*------------------------------------------------------------
+	Table
+	-------------------------------------------------------------*/
+
+	var _Table = function(profile, startDate, endDate){
+		this.query = new _Query(profile, startDate, endDate);
+
+		this.metricLabels = [];
+		this.dimensionLabels = [];
+
+		this.options = {};
+	};
+
+	_Table.prototype.addMetric = function(metric, label){
+		this.query.addMetric(metric);
+		this.metricLabels.push(label);
+	};
+
+	_Table.prototype.addDimension = function(dimension, label){
+		this.query.addDimension(dimension);
+		this.dimensionLabels.push(label);
+	};
+
+	_Table.prototype.setOptions = function(opts){
+		this.options = opts;
+	};
+
+	_Table.prototype.draw = function(container, fn){
+		var t = this;
+
+		this.query.execute(function (result) {
+
+			var data = result.rows;
+
+			var labelRow = [];
+
+			for (var d = 0; d < t.dimensionLabels.length; d++) {
+				labelRow.push(t.dimensionLabels[d]);
+			}
+
+			for (var m = 0; m < t.metricLabels.length; m++) {
+				labelRow.push(t.metricLabels[m]);
+			}
+
+			data.splice(0, 0, labelRow);
+
+			var dt = google.visualization.arrayToDataTable(data);
+
+			var chart = new google.visualization.Table(document.getElementById(container));
+			chart.draw(dt, t.options);
+
+			if (typeof fn != 'undefined') {
+				fn();
+			}
+		});
+	};
 
 	/*------------------------------------------------------------
 	Exports
@@ -245,9 +387,12 @@ var oo = (function(document){
 
 	return {
 		setAPIKey : _setAPIKey,
+		setChartColors : _setChartColors,
 		Query : _Query,
 		Timeline : _Timeline,
-		loadScript : _loadScript,
+		Metric : _Metric,
+		Pie : _Pie,
+		Table : _Table,
 		load : _load,
 		formatDate : _formatDate
 	};
