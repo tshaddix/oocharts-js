@@ -77,7 +77,7 @@ Once the load callback has fired, you are ready to begin using OOcharts. The loa
 ##Metric##
 Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.
 
-####Using JS####W
+####Using JS####
 Metrics can easily be created through the JSAPI under the `oo` object.
 
 - `constructor(profile, startDate, endDate)` - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
