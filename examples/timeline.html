@@ -1,0 +1,28 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='chart'></div>
+		<script src='../oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("accdbc4c1dd2575ecc887e3218af8bfd594917ca");
+
+				oo.load(function(){
+
+					var timeline = new oo.Timeline("71963100", "30d");
+
+					timeline.addMetric("ga:visits", "Visits");
+
+					timeline.addMetric("ga:newVisits", "New Visits");
+
+					timeline.draw('chart');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
