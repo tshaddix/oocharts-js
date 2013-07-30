@@ -198,7 +198,7 @@ You can also easily create Timelines through the HTML Attribute API as well.
 - `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
 - `data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
 - `data-oochart-profile` - The Google Analytics profile ID.
-- `data-oochart-metrics` - A list of comma-deliminated metrics in the format: `metric,label,metric,label`. Check our the example below.
+- `data-oochart-metrics` - A list of comma-deliminated metrics in the format: `metric,label,metric,label`. Check out the example below.
 
 
 ```html
@@ -224,16 +224,224 @@ You can also easily create Timelines through the HTML Attribute API as well.
 ```
 
 ###Pie###
+A Pie chart is really just what it sounds like: A Pie chart. This chart uses the Google Visualization [Pie Chart](https://developers.google.com/chart/interactive/docs/gallery/piechart) to display a metric over a dimension (such as visits by browser type).
+
+####Using JS####
+
+- `constructor(profile, startDate, endDate)` - The Pie constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+- `setMetric(metric, label)` - Sets the `metric` of the Pie with the name `label`.
+- `setDimension(dimension, label)` - Sets the `dimension` of the Pie.
+- `setOptions(opts)` -  Overwrites any default options for the Pie. See Pie chart options [here](https://developers.google.com/chart/interactive/docs/gallery/piechart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the Pie.
+- `draw(container, callback)` - Calling draw will draw the Pie into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='pie'></div>
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+
+					var pie = new oo.Pie("{{ YOUR PROFILE ID }}", "30d");
+
+					pie.setMetric("ga:visits", "Visits");
+					pie.setDimension("ga:browser");
+
+					pie.draw('pie');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
+```
+
+####Using HTML Attributes####
+Pie charts are available throught the new HTML API.
+
+- `data-oochart` - Should always have value of `timeline` for timelines.
+- `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-profile` - The Google Analytics profile ID.
+- `data-oochart-metric` - Should contain the metric for the Pie and the label, seperated by a `,`. (i.e. `"ga:visits,Visits"`)
+- `data-oochart-dimension` - Should contain the dimension for the Pie and the label, seperated by a `,`. (i.e. `"ga:browser,Browser"`)
+
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div data-oochart='pie' data-oochart-start-date='30d' data-oochart-metric='ga:visits,Visits' data-oochart-dimension='ga:browser' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load();
+			};
+
+		</script>
+	</body>
+</html>
+```
 
 ###Table###
+A Table can show a multiple dimensions by multiple metrics. This chart uses the Google Visualization [Table](https://developers.google.com/chart/interactive/docs/gallery/table).
+
+####Using JS####
+
+- `constructor(profile, startDate, endDate)` - The Table constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+- `addMetric(metric, label)` - Adds the `metric` to the Table with the name `label`.
+- `addDimension(dimension, label)` - Adds the `dimension` to the Table with the name `label`.
+- `setOptions(opts)` -  Overwrites any default options for the Table. See Table chart options [here](https://developers.google.com/chart/interactive/docs/gallery/table#Configuration_Options).
+- `draw(container, callback)` - Calling draw will draw the Table into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='table'></div>
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+
+					var table = new oo.Table("{{ YOUR PROFILE ID }}", "30d");
+
+					table.addMetric("ga:visits", "Visits");
+
+					table.addDimension("ga:city", "City");
+
+					table.draw('table');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
+```
+
+####Using HTML Attributes####
+You may have guessed it: You can create Tables through the HTML API as well.
+
+- `data-oochart` - Should always have value of `timeline` for timelines.
+- `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-profile` - The Google Analytics profile ID.
+- `data-oochart-metrics` - A list of comma-deliminated metrics and labels in the format: `metric,label,metric,label`. Check out the example below.
+- `data-oochart-dimensions` - A list of comma-deliminated dimensions and labels in the format: `dimension,label,dimension,label`. Check out the example below.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div data-oochart='table' data-oochart-start-date='30d' data-oochart-metrics='ga:visits,Visits' data-oochart-dimensions='ga:city,City' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load();
+			};
+
+		</script>
+	</body>
+</html>
+```
 
 ###Query###
+The Query object is the core object of the OOcharts JS. The query object maintains the metrics and dimensions under the charts and executes the API query when `draw()` is called. The Query can also be used by itself to fetch data from the OOcharts API, allowing you to use any charting library you want.
+
+- `constructor(profile, startDate, endDate)` - The Query constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+- `addMetric(metric)` - Adds a `metric` to the Query.
+- `addDimension(dimension)` - Adds a `dimension` to the Query.
+- `clearMetrics()` - Clears all metrics on the Query.
+- `clearDimensions()` - Clears all dimensions on the Query.
+- `setFilters(filters)` - Sets the `filters` string for the Query.
+- `setSort(sort)` - Sets the `sort` string for the Query.
+- `setSegment(segment)` - Sets the `segment` string for the Query.
+- `setIndex(index)` - Sets the starting `index` for Query results (default: 0).
+- `setMaxResults(maxResults)` - Sets the `maxResults` for the Query.
+- `execute(callback)` - Executes the Query, and returns `data` as the sole parameter in the passed `callback` function.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+
+					var query = new oo.Query('{{ YOUR PROFILE ID}}', '30d');
+					query.addMetric('ga:visits');
+					query.addDimension('ga:date');
+					query.addSort('-ga:visits');;
+					query.execute(function(data){
+						alert(data);
+					});
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
+```
+
+###Advanced Chart/Query Options###
+You may want to add more complex behaviour to your charts (such as adding a filter to your Timeline). This is actually really easy. Under each charting object is a Query (above). You can set the properties on the query under the chart before drawing it to achieve more complex charts:
+
+```js
+var timeline = new oo.Timeline(profile, startDate, endDate);
+
+timeline.addMetric('ga:visits', 'Visits');
+timeline.query.setFilter('ga:visits>100'); //access query object
+
+timeline.draw(container);
+```
 
 ###Helper Methods###
+There are a couple public facing methods on the `oo` object which we've included to make your quest for chart greatness easier.
+
+- `oo.formatDate(date)` - Formats `date` into the acceptable GA format (YYYY-MM-DD);
+- `oo.parseDate(val)` - Parses a GA date string into a Javascript date object.
 
 ###Theming###
+You probably want to throw your own styles on the charts, right? You can do this through the `setOptions()` method that all of the charts have, but this would be cumbersome. Thank goodness there are some default options to set!
 
-There are a couple public facing methods on the `oo` object which we've included to make your quest for chart greatness easier.
+- `oo.setTimelineDefaults(opts)` - Sets the default options of all new Timelines to `opts`.
+- `oo.setTableDefaults(opts)` - Sets the default options of all new Tables to `opts`.
+- `oo.setPieDefaults(opts)` - Sets the default options of all new Pies to `opts`.
+
+This is especially helpful if you want to stick to the HTML API. Set your defaults before the load call, and all HTML Attribute charts will pick up those defaults.
 
 #OOcharts API#
 
