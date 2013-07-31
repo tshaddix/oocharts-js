@@ -170,7 +170,7 @@ var oo = (function(document){
 
 		load_jsapi(function () {
 			load_visualization(function () {
-	    		cb();
+	    		if(cb) cb();
 
 	    		// run autobuild
 	    		_autoBuild();
