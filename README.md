@@ -78,7 +78,7 @@ Once the load callback has fired, you are ready to begin using OOcharts. The loa
 The OOcharts JS library comes with a few examples. These examples have all the basics you will need to get started. Just make sure to replace `{{YOUR PROFILE ID}}` with your Google Analytics Profile ID and `{{YOUR API KEY}}` with your OOcharts API Key.
 
 ####Issues####
-If you run into any trouble with the OOcharts, you can email [support@oocharts.com](mailto:support@oocharts.com) or [create an issue](https://github.com/OOcharts/js/issues) on GitHub.
+If you run in to any trouble with the OOcharts, you can email [support@oocharts.com](mailto:support@oocharts.com) or [create an issue](https://github.com/OOcharts/js/issues) on GitHub.
 
 ##Metric##
 Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.
