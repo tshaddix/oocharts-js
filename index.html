@@ -92,8 +92,8 @@
 <li>'d': Days</li>
 <li>'w': Weeks</li>
 <li>'m': Months</li>
-<li>'y' Years</li>
-</ul><p>It is important to note that only one of the two dates (start and end) can be relative. If the start date is relative, then it will include the dates <strong>before</strong> the end date (i.e. "30d" would make the start date 30 days from the end date). If the end date is realtive, then it will include the dates <strong>after</strong> the start date.</p>
+<li>'y': Years</li>
+</ul><p>It is important to note that only one of the two dates (start and end) can be relative. If the start date is relative, then it will include the dates <strong>before</strong> the end date (i.e. "30d" would make the start date 30 days from the end date). If the end date is relative, then it will include the dates <strong>after</strong> the start date.</p>
 
 <h4>
 <a name="setting-the-api-key-and-loading-the-dependencies" class="anchor" href="#setting-the-api-key-and-loading-the-dependencies"><span class="octicon octicon-link"></span></a>Setting the API Key and Loading the Dependencies</h4>
@@ -118,6 +118,16 @@
 </pre></div>
 
 <p>Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.</p>
+
+<h4>
+<a name="working-with-the-examples" class="anchor" href="#working-with-the-examples"><span class="octicon octicon-link"></span></a>Working with the Examples</h4>
+
+<p>The OOcharts JS library comes with a few examples. These examples have all the basics you will need to get started. Just make sure to replace <code>{{YOUR PROFILE ID}}</code> with your Google Analytics Profile ID and <code>{{YOUR API KEY}}</code> with your OOcharts API Key.</p>
+
+<h4>
+<a name="issues" class="anchor" href="#issues"><span class="octicon octicon-link"></span></a>Issues</h4>
+
+<p>If you run in to any trouble with the OOcharts, you can email <a href="mailto:support@oocharts.com">support@oocharts.com</a> or <a href="https://github.com/OOcharts/js/issues">create an issue</a> on GitHub.</p>
 
 <h2>
 <a name="metric" class="anchor" href="#metric"><span class="octicon octicon-link"></span></a>Metric</h2>
@@ -674,6 +684,16 @@
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-40595300-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
