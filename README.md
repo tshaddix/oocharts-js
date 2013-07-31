@@ -39,7 +39,7 @@ All OOcharts JS objects work with a few basic principals:
 You will need to have already created an API Key with access to the Google Profile you are trying to display.
 
 ####Profile ID####
-You will also need the Google Analytics Profile ID. You can find this in Mission Control next to wherever the profile name is display in brackets, or on your Google Analytics Dashboard.
+You will also need the Google Analytics Profile ID. You can find this in Mission Control next to wherever the profile name is displayed in brackets, or on your Google Analytics Dashboard.
 
 ####Relative Dates####
 Dates can either be `Date` objects, Relative dates, or null (in which case the date will default to the current date). Relative Dates provide an easy way to get a range of data by using a number and a metric, such as "30d" for 30 days:
