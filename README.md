@@ -30,7 +30,7 @@ The OOcharts JS script is a single file. It can be downloaded from the GitHub re
 	<script src='oocharts.js'></script>
 ```
 
-Once the script has loaded, you will have access to the `oo` object which houses all the Goodies to create OOcharts.
+Once the script has loaded, you will have access to the `oo` object which houses all the goodies to create OOcharts.
 
 ###Basics###
 All OOcharts JS objects work with a few basic principals:
