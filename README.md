@@ -47,9 +47,9 @@ Dates can either be `Date` objects, Relative dates, or null (in which case the d
 - 'd': Days
 - 'w': Weeks
 - 'm': Months
-- 'y' Years
+- 'y': Years
 
-It is important to note that only one of the two dates (start and end) can be relative. If the start date is relative, then it will include the dates **before** the end date (i.e. "30d" would make the start date 30 days from the end date). If the end date is realtive, then it will include the dates **after** the start date.
+It is important to note that only one of the two dates (start and end) can be relative. If the start date is relative, then it will include the dates **before** the end date (i.e. "30d" would make the start date 30 days from the end date). If the end date is relative, then it will include the dates **after** the start date.
 
 ####Setting the API Key and Loading the Dependencies####
 OOcharts uses the [Google Visualization Library](https://developers.google.com/chart/interactive/docs/reference) to chart data. To get started, you will need to call the `load()` function after setting your API Key. This is all a bunch of gibberish, so here is a code example:
@@ -73,6 +73,12 @@ OOcharts uses the [Google Visualization Library](https://developers.google.com/c
 ```
 
 Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.
+
+####Working with the Examples####
+The OOcharts JS library comes with a few examples. These examples have all the basics you will need to get started. Just make sure to replace `{{YOUR PROFILE ID}}` with your Google Analytics Profile ID and `{{YOUR API KEY}}` with your OOcharts API Key.
+
+####Issues####
+If you run into any trouble with the OOcharts, you can email [support@oocharts.com](mailto:support@oocharts.com) or [create an issue](https://github.com/OOcharts/js/issues) on GitHub.
 
 ##Metric##
 Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.
