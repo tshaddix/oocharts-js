@@ -233,7 +233,7 @@ var oo = (function(document){
 	 * @returns {Date} parsed Date
 	 */
 	var _parseDate = function(val){
-		return new Date(val.substring(0, 4), val.substring(5, 7), val.substring(8, 10));
+		return new Date(val.substring(0, 4), parseInt(val.substring(5, 7)) - 1, val.substring(8, 10));
 	};
 
 	/*------------------------------------------------------------
