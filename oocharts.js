@@ -376,7 +376,7 @@ var oo = (function(document){
 		}
 
 		if(this.filters){
-			query.filters = encodeURIComponent(this.filters);
+			query.filters = this.filters;
 		}
 
 		if(this.sort){
@@ -388,7 +388,7 @@ var oo = (function(document){
 		}
 
 		if(this.segment){
-			query.segment = encodeURIComponent(this.segment);
+			query.segment = this.segment;
 		}
 
 		if(this.maxResults){
