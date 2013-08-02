@@ -385,7 +385,7 @@ The Query object is the core object of the OOcharts JS. The query object maintai
 - `addDimension(dimension)` - Adds a `dimension` to the Query.
 - `clearMetrics()` - Clears all metrics on the Query.
 - `clearDimensions()` - Clears all dimensions on the Query.
-- `setFilters(filters)` - Sets the `filters` string for the Query.
+- `setFilter(filters)` - Sets the `filters` string for the Query.
 - `setSort(sort)` - Sets the `sort` string for the Query.
 - `setSegment(segment)` - Sets the `segment` string for the Query.
 - `setIndex(index)` - Sets the starting `index` for Query results (default: 0).
