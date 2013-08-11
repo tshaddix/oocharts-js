@@ -1,35 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>OOcharts JS by OOcharts</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="OOcharts JS : JS frontend for OOcharts Service." />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>OOcharts JS</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">OOcharts JS</h1>
-        <p class="header">JS frontend for OOcharts Service.</p>
 
-        <ul>
-          <li class="download"><a class="buttons" href="https://github.com/OOcharts/js/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/OOcharts/js/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/OOcharts/js">View On GitHub</a></li>
-        </ul>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/OOcharts/js">View on GitHub</a>
 
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/OOcharts">OOcharts</a></p>
+          <h1 id="project_title">OOcharts JS</h1>
+          <h2 id="project_tagline">JS frontend for OOcharts Service.</h2>
 
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/OOcharts/js/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/OOcharts/js/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-      </header>
-      <section>
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h1>
 <a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h1>
 
@@ -315,13 +316,13 @@
 <li>
 <code>constructor(profile, startDate, endDate)</code> - The Bar constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
 <li>
-<code>addMetric(metric, label)</code> - Adds the <code>metric</code> to the timeline with the name <code>label</code>.</li>
+<code>addMetric(metric, label)</code> - Adds the <code>metric</code> to the bar with the name <code>label</code>.</li>
 <li>
 <code>setDimension(dimension)</code> - Sets the dimension for the bar chart.</li>
 <li>
 <code>setOptions(opts)</code> -  Overwrites any default options for the bar chart. See bar chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the timeline.</li>
 <li>
-<code>draw(container, callback)</code> - Calling draw will draw the Timeline into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
+<code>draw(container, callback)</code> - Calling draw will draw the Bar into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
 </ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
@@ -772,12 +773,17 @@
 <code>callback</code> - <em>(optional)</em> Only necessary when using JSONP response type.</li>
 </ul>
       </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">OOcharts JS maintained by <a href="https://github.com/OOcharts">OOcharts</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		          <script type="text/javascript">
+
+              <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
@@ -787,6 +793,7 @@
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
