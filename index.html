@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,17 +16,18 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>OOcharts JS</h1>
-        <p>JS frontend for OOcharts Service.</p>
-
-        <p class="view"><a href="https://github.com/OOcharts/js">View the Project on GitHub <small>OOcharts/js</small></a></p>
-
+        <h1 class="header">OOcharts JS</h1>
+        <p class="header">JS frontend for OOcharts Service.</p>
 
         <ul>
-          <li><a href="https://github.com/OOcharts/js/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/OOcharts/js/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/OOcharts/js">View On <strong>GitHub</strong></a></li>
+          <li class="download"><a class="buttons" href="https://github.com/OOcharts/js/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/OOcharts/js/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/OOcharts/js">View On GitHub</a></li>
         </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/OOcharts">OOcharts</a></p>
+
+
       </header>
       <section>
         <h1>
@@ -302,12 +304,102 @@
 </pre></div>
 
 <h2>
+<a name="bar" class="anchor" href="#bar"><span class="octicon octicon-link"></span></a>Bar</h2>
+
+<p>A Bar is a Google Visualization <a href="https://developers.google.com/chart/interactive/docs/gallery/barchart">bar chart</a> which shows metric values over a dimension.</p>
+
+<h4>
+<a name="using-js-2" class="anchor" href="#using-js-2"><span class="octicon octicon-link"></span></a>Using JS</h4>
+
+<ul>
+<li>
+<code>constructor(profile, startDate, endDate)</code> - The Bar constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the <em>Basics</em> section.</li>
+<li>
+<code>addMetric(metric, label)</code> - Adds the <code>metric</code> to the timeline with the name <code>label</code>.</li>
+<li>
+<code>setDimension(dimension)</code> - Sets the dimension for the bar chart.</li>
+<li>
+<code>setOptions(opts)</code> -  Overwrites any default options for the bar chart. See bar chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the timeline.</li>
+<li>
+<code>draw(container, callback)</code> - Calling draw will draw the Timeline into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">'chart'</span><span class="nt">&gt;&lt;/div&gt;</span>      
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+                    <span class="kd">var</span> <span class="nx">bar</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Bar</span><span class="p">(</span><span class="s2">"{{ YOUR PROFILE ID }}"</span><span class="p">,</span> <span class="s2">"30d"</span><span class="p">);</span>
+
+                    <span class="nx">bar</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s2">"ga:visits"</span><span class="p">,</span> <span class="s2">"Visits"</span><span class="p">);</span>
+
+                    <span class="nx">bar</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s2">"ga:newVisits"</span><span class="p">,</span> <span class="s2">"New Visits"</span><span class="p">);</span>
+
+                    <span class="nx">bar</span><span class="p">.</span><span class="nx">setDimension</span><span class="p">(</span><span class="s2">"ga:continent"</span><span class="p">);</span>
+
+                    <span class="nx">bar</span><span class="p">.</span><span class="nx">draw</span><span class="p">(</span><span class="s1">'chart'</span><span class="p">);</span>
+
+                <span class="p">});</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h4>
+<a name="using-html-attributes-2" class="anchor" href="#using-html-attributes-2"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+
+<p>You can also easily create Bar Charts through the HTML Attribute API as well.</p>
+
+<ul>
+<li>
+<code>data-oochart</code> - Should always have value of <code>bar</code> for bar charts.</li>
+<li>
+<code>data-oochart-start-date</code> - The beginning date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-end-date</code> - The ending date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
+<li>
+<code>data-oochart-profile</code> - The Google Analytics profile ID.</li>
+<li>
+<code>data-oochart-metrics</code> - A list of comma-deliminated metrics in the format: <code>metric,label,metric,label</code>. Check out the example below.</li>
+<li>
+<code>data-oochart-dimension</code> - The dimension to group metric values by.</li>
+</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'bar'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-dimension=</span><span class="s">'ga:continent'</span> <span class="na">data-oochart-metrics=</span><span class="s">'ga:visits,Visits,ga:newVisits,New Visits'</span> <span class="na">data-oochart-profile=</span><span class="s">'{{ YOUR PROFILE ID }}'</span><span class="nt">&gt;&lt;/div&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+
+            <span class="nb">window</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">setAPIKey</span><span class="p">(</span><span class="s2">"{{ YOUR API KEY }}"</span><span class="p">);</span>
+
+                <span class="nx">oo</span><span class="p">.</span><span class="nx">load</span><span class="p">();</span>
+            <span class="p">};</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+
+<h2>
 <a name="pie" class="anchor" href="#pie"><span class="octicon octicon-link"></span></a>Pie</h2>
 
 <p>A Pie chart is really just what it sounds like: A Pie chart. This chart uses the Google Visualization <a href="https://developers.google.com/chart/interactive/docs/gallery/piechart">Pie Chart</a> to display a metric over a dimension (such as visits by browser type).</p>
 
 <h4>
-<a name="using-js-2" class="anchor" href="#using-js-2"><span class="octicon octicon-link"></span></a>Using JS</h4>
+<a name="using-js-3" class="anchor" href="#using-js-3"><span class="octicon octicon-link"></span></a>Using JS</h4>
 
 <ul>
 <li>
@@ -350,7 +442,7 @@
 </pre></div>
 
 <h4>
-<a name="using-html-attributes-2" class="anchor" href="#using-html-attributes-2"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+<a name="using-html-attributes-3" class="anchor" href="#using-html-attributes-3"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
 
 <p>Pie charts are available throught the new HTML API.</p>
 
@@ -394,7 +486,7 @@
 <p>A Table can show a multiple dimensions by multiple metrics. This chart uses the Google Visualization <a href="https://developers.google.com/chart/interactive/docs/gallery/table">Table</a>.</p>
 
 <h4>
-<a name="using-js-3" class="anchor" href="#using-js-3"><span class="octicon octicon-link"></span></a>Using JS</h4>
+<a name="using-js-4" class="anchor" href="#using-js-4"><span class="octicon octicon-link"></span></a>Using JS</h4>
 
 <ul>
 <li>
@@ -438,7 +530,7 @@
 </pre></div>
 
 <h4>
-<a name="using-html-attributes-3" class="anchor" href="#using-html-attributes-3"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
+<a name="using-html-attributes-4" class="anchor" href="#using-html-attributes-4"><span class="octicon octicon-link"></span></a>Using HTML Attributes</h4>
 
 <p>You may have guessed it: You can create Tables through the HTML API as well.</p>
 
@@ -493,7 +585,7 @@
 <li>
 <code>clearDimensions()</code> - Clears all dimensions on the Query.</li>
 <li>
-<code>setFilters(filters)</code> - Sets the <code>filters</code> string for the Query.</li>
+<code>setFilter(filters)</code> - Sets the <code>filters</code> string for the Query.</li>
 <li>
 <code>setSort(sort)</code> - Sets the <code>sort</code> string for the Query.</li>
 <li>
@@ -568,6 +660,8 @@
 <code>oo.setTableDefaults(opts)</code> - Sets the default options of all new Tables to <code>opts</code>.</li>
 <li>
 <code>oo.setPieDefaults(opts)</code> - Sets the default options of all new Pies to <code>opts</code>.</li>
+<li>
+<code>oo.setBarDefaults(opts)</code> - Sets the default options of all new Bar charts to <code>opts</code>.</li>
 </ul><p>This is especially helpful if you want to stick to the HTML API. Set your defaults before the load call, and all HTML Attribute charts will pick up those defaults.</p>
 
 <h1>
@@ -679,12 +773,11 @@
 </ul>
       </section>
       <footer>
-        <p>This project is maintained by <a href="https://github.com/OOcharts">OOcharts</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		          <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
           </script>
