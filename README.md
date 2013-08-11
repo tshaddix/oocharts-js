@@ -235,10 +235,10 @@ A Bar is a Google Visualization [bar chart](https://developers.google.com/chart/
 ####Using JS####
 
 - `constructor(profile, startDate, endDate)` - The Bar constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
-- `addMetric(metric, label)` - Adds the `metric` to the timeline with the name `label`.
+- `addMetric(metric, label)` - Adds the `metric` to the bar with the name `label`.
 - `setDimension(dimension)` - Sets the dimension for the bar chart.
 - `setOptions(opts)` -  Overwrites any default options for the bar chart. See bar chart options [here](https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the timeline.
-- `draw(container, callback)` - Calling draw will draw the Timeline into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `draw(container, callback)` - Calling draw will draw the Bar into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
 
 ```html
 <html>
