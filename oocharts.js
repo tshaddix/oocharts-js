@@ -413,7 +413,13 @@ var oo = (function(document){
 			query.maxResults = this.maxResults;
 		}
 
-		JSONP.get(_serviceEndpoint, query, callback);
+		JSONP.get(_serviceEndpoint, query, function(data){
+			if(data.rows.length === 0){
+				data.rows = [[]];
+			}
+				
+			callback(data);
+		});
 	};
 
 	/*------------------------------------------------------------
@@ -455,8 +461,13 @@ var oo = (function(document){
 				element = container;
 			}
 
-			element.innerHTML = response.rows[0][0].toString();
-
+			if(typeof response.rows[0][0] !== 'undefined'){
+				element.innerHTML = response.rows[0][0].toString();
+			}
+			else {
+				element.innerHTML = "0";	
+			}
+			
 			if(typeof fn !== 'undefined'){
 				fn();
 			}
