@@ -1,0 +1,35 @@
+<html>
+	<head>
+	</head>
+	<body>
+		<h3>With JS</h3>
+		<div id='chart'></div>
+
+		<h3>With HTML Attributes</h3>
+		<div data-oochart='bar' data-oochart-start-date='30d' data-oochart-metrics='ga:visits,Visits,ga:newVisits,New Visits' data-oochart-dimension='ga:continent' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+		
+		<script src='../oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+					
+					var bar = new oo.Bar("{{ YOUR PROFILE ID }}", "30d");
+
+					bar.addMetric("ga:visits", "Visits");
+
+					bar.addMetric("ga:newVisits", "New Visits");
+
+					bar.setDimension("ga:continent");
+
+					bar.draw('chart');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>

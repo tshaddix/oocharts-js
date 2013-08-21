@@ -229,6 +229,82 @@ You can also easily create Timelines through the HTML Attribute API as well.
 </html>
 ```
 
+##Bar##
+A Bar is a Google Visualization [bar chart](https://developers.google.com/chart/interactive/docs/gallery/barchart) which shows metric values over a dimension.
+
+####Using JS####
+
+- `constructor(profile, startDate, endDate)` - The Bar constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
+- `addMetric(metric, label)` - Adds the `metric` to the bar with the name `label`.
+- `setDimension(dimension)` - Sets the dimension for the bar chart.
+- `setOptions(opts)` -  Overwrites any default options for the bar chart. See bar chart options [here](https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the timeline.
+- `draw(container, callback)` - Calling draw will draw the Bar into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div id='chart'></div>		
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load(function(){
+
+					var bar = new oo.Bar("{{ YOUR PROFILE ID }}", "30d");
+
+					bar.addMetric("ga:visits", "Visits");
+
+					bar.addMetric("ga:newVisits", "New Visits");
+
+					bar.setDimension("ga:continent");
+
+					bar.draw('chart');
+
+				});
+			};
+
+		</script>
+	</body>
+</html>
+```
+
+####Using HTML Attributes####
+You can also easily create Bar Charts through the HTML Attribute API as well.
+
+- `data-oochart` - Should always have value of `bar` for bar charts.
+- `data-oochart-start-date` - The beginning date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-end-date` - The ending date of the data. Can be relative, formatted `YYYY-MM-DD`, or null (indicating current date).
+- `data-oochart-profile` - The Google Analytics profile ID.
+- `data-oochart-metrics` - A list of comma-deliminated metrics in the format: `metric,label,metric,label`. Check out the example below.
+- `data-oochart-dimension` - The dimension to group metric values by.
+
+```html
+<html>
+	<head>
+	</head>
+	<body>
+		<div data-oochart='bar' data-oochart-start-date='30d' data-oochart-dimension='ga:continent' data-oochart-metrics='ga:visits,Visits,ga:newVisits,New Visits' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
+		
+		<script src='oocharts.js'></script>
+		<script type="text/javascript">
+
+			window.onload = function(){
+
+				oo.setAPIKey("{{ YOUR API KEY }}");
+
+				oo.load();
+			};
+
+		</script>
+	</body>
+</html>
+```
+
 ##Pie##
 A Pie chart is really just what it sounds like: A Pie chart. This chart uses the Google Visualization [Pie Chart](https://developers.google.com/chart/interactive/docs/gallery/piechart) to display a metric over a dimension (such as visits by browser type).
 
@@ -446,6 +522,7 @@ You probably want to throw your own styles on the charts, right? You can do this
 - `oo.setTimelineDefaults(opts)` - Sets the default options of all new Timelines to `opts`.
 - `oo.setTableDefaults(opts)` - Sets the default options of all new Tables to `opts`.
 - `oo.setPieDefaults(opts)` - Sets the default options of all new Pies to `opts`.
+- `oo.setBarDefaults(opts)` - Sets the default options of all new Bar charts to `opts`.
 
 This is especially helpful if you want to stick to the HTML API. Set your defaults before the load call, and all HTML Attribute charts will pick up those defaults.
 

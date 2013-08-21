@@ -9,6 +9,8 @@ var oo = (function(document){
 
 	var _defaultTableOptions = {};
 
+	var _defaultBarOptions = {};
+
 	/*
 	 * Binds OOcharts Objects to DOM Elements based on HTML attributes
 	 */
@@ -63,6 +65,22 @@ var oo = (function(document){
 
 				timeline.draw(_element);
 
+			} else if (type.toLowerCase() === 'bar' ) {
+				var bar = new _Bar(profile, startDate, endDate);
+				
+				var metricsString = _element.getAttribute('data-oochart-metrics');
+				var metrics = metricsString.split(',');
+
+				for(var m = 0; m < metrics.length; m++){
+					bar.addMetric(metrics[m], metrics[m+1]);
+					m=m+1;
+				}
+				
+				var dimension = _element.getAttribute('data-oochart-dimension');
+
+				bar.setDimension(dimension);
+				
+				bar.draw(_element);
 			//if pie
 			} else if (type.toLowerCase() === 'pie'){
 				var pie = new _Pie(profile, startDate, endDate);
@@ -395,7 +413,13 @@ var oo = (function(document){
 			query.maxResults = this.maxResults;
 		}
 
-		JSONP.get(_serviceEndpoint, query, callback);
+		JSONP.get(_serviceEndpoint, query, function(data){
+			if(data.rows.length === 0){
+				data.rows = [[]];
+			}
+				
+			callback(data);
+		});
 	};
 
 	/*------------------------------------------------------------
@@ -437,8 +461,13 @@ var oo = (function(document){
 				element = container;
 			}
 
-			element.innerHTML = response.rows[0][0].toString();
-
+			if(typeof response.rows[0][0] !== 'undefined'){
+				element.innerHTML = response.rows[0][0].toString();
+			}
+			else {
+				element.innerHTML = "0";	
+			}
+			
 			if(typeof fn !== 'undefined'){
 				fn();
 			}
@@ -521,6 +550,93 @@ var oo = (function(document){
 
 			var chart = new google.visualization.LineChart(element);
 			chart.draw(dt, t.options);
+
+			if (typeof fn != 'undefined') {
+				fn();
+			}
+		});
+	};
+	
+	/*------------------------------------------------------------
+	Bar
+	-------------------------------------------------------------*/
+
+	/*
+	 * Bar constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
+	var _Bar = function(profile, startDate, endDate){
+		this.query = new _Query(profile, startDate, endDate);
+		
+		this.metricLabels = [];
+		
+		this.options = _defaultBarOptions;
+	};
+
+	/*
+	 * Override default options
+	 * @param {Object} opts
+	 */
+	_Bar.prototype.setOptions = function(opts){
+		this.options = opts;
+	};
+
+	/*
+	 * Adds a metric to Bar
+	 * @param {String} metric
+	 * @param {String} label
+	 */
+	_Bar.prototype.addMetric = function(metric, label){
+		this.metricLabels.push(label);
+		this.query.addMetric(metric);
+	};
+	
+	/*
+	 * Set dimension of Bar
+	 * @param {String} dimension
+	 */
+	_Bar.prototype.setDimension = function(dimension){
+		this.query.clearDimensions();
+		this.query.dimensions.push(dimension);
+		this.dimensionLabel = dimension;
+	};
+
+	/*
+	 * Draws Bar in container element
+	 * @param {Element or String} container (or id of container element)
+	 * @param {Function} fn
+	 */
+	_Bar.prototype.draw = function(container, fn){
+		var b = this;
+
+		this.query.execute(function (response) {
+
+			var data = response.rows;
+
+			var dt = new google.visualization.DataTable();
+
+			dt.addColumn('string', b.dimensionLabel);
+
+			// Add data column labels
+			for (var l = 0; l < b.metricLabels.length; l++) {
+				dt.addColumn('number', b.metricLabels[l]);
+			}
+
+			// add data
+			dt.addRows(data);
+
+			var element;
+
+			if(typeof container === 'string'){
+				element = document.getElementById(container);
+			} else {
+				element = container;
+			}
+
+			var chart = new google.visualization.BarChart(element);
+			chart.draw(dt, b.options);
 
 			if (typeof fn != 'undefined') {
 				fn();
@@ -707,6 +823,7 @@ var oo = (function(document){
 	return {
 		Query : _Query,
 		Timeline : _Timeline,
+		Bar : _Bar,
 		Metric : _Metric,
 		Pie : _Pie,
 		Table : _Table,
@@ -795,4 +912,4 @@ var JSONP = (function (document) {
          */
         callbacks: callbacks
     };
-})(document);
+}(document));
