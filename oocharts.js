@@ -251,7 +251,11 @@ var oo = (function(document){
 	 * @returns {Date} parsed Date
 	 */
 	var _parseDate = function(val){
-		return new Date(val.substring(0, 4), parseInt(val.substring(5, 7)) - 1, val.substring(8, 10));
+		val = val.split('-');
+		var newDate = new Date();
+		newDate.setUTCFullYear(val[0], val[1]-1, val[2]);
+		newDate.setUTCHours(0,0,0,0);
+		return newDate;
 	};
 
 	/*------------------------------------------------------------
