@@ -605,3 +605,11 @@ This endpoint is used for dynamic access to your GA profiles. This is also the e
 - `index` - *(optional)* The starting index of the query results.
 - `maxResults` - *(optional)* The max results for the query.
 - `callback` - *(optional)* Only necessary when using JSONP response type.
+
+#Contributing#
+
+There are multiple ways to contribute to OOcharts! You can give a small donation at [gittip](https://gittip.com/OOcharts) or you can contribute to the code base. OOcharts can be consumed by multiple charting libraries and other projects, so feel free to start making your own OOcharts visualization library to interact with the API! If you need help getting started, just look at the source of the [OOcharts JS repository](https://github.com/OOcharts/js).
+
+###Contributers###
+
+- @vijayamaharaja - Added support for older versions of IE (see #11)
