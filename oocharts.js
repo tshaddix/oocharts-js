@@ -253,8 +253,8 @@ var oo = (function(document){
 	var _parseDate = function(val){
 		val = val.split('-');
 		var newDate = new Date();
-		newDate.setUTCFullYear(val[0], val[1]-1, val[2]);
-		newDate.setUTCHours(0,0,0,0);
+		newDate.setFullYear(val[0], val[1]-1, val[2]);
+		newDate.setHours(0,0,0,0);
 		return newDate;
 	};
 
