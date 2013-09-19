@@ -10,6 +10,8 @@ var oo = (function(document){
 	var _defaultTableOptions = {};
 
 	var _defaultBarOptions = {};
+	
+	var _defaultColumnOptions = {};
 
 	/*
 	 * Binds OOcharts Objects to DOM Elements based on HTML attributes
@@ -50,6 +52,24 @@ var oo = (function(document){
 				var metric = new _Metric(profile, startDate, endDate);
 				metric.setMetric(_element.getAttribute('data-oochart-metric'));
 				metric.draw(_element);
+				
+			//if column
+			} else if (type.toLowerCase() === 'column'){
+				var column = new _Column(profile, startDate, endDate);
+				
+				var metricsString = _element.getAttribute('data-oochart-metrics');
+				var metrics = metricsString.split(',');
+
+				for(var m = 0; m < metrics.length; m++){
+					column.addMetric(metrics[m], metrics[m+1]);
+					m=m+1;
+				}
+				
+				var dimension = _element.getAttribute('data-oochart-dimension');
+
+				column.setDimension(dimension);
+				
+				column.draw(_element);
 
 			//if timeline
 			} else if (type.toLowerCase() === 'timeline'){
@@ -202,6 +222,14 @@ var oo = (function(document){
 	 */
 	var _setAPIKey = function(key){
 		_apiKey = key;
+	};
+	
+	/*
+	 * Sets Column chart default options
+	 * @param {Object} opts
+	 */
+	var _setColumnDefaults = function(opts){
+		_defaultColumnOptions = opts;
 	};
 
 	/*
@@ -473,6 +501,93 @@ var oo = (function(document){
 			}
 			
 			if(typeof fn !== 'undefined'){
+				fn();
+			}
+		});
+	};
+	
+	/*------------------------------------------------------------
+	Column
+	-------------------------------------------------------------*/
+
+	/*
+	 * Column constructor
+	 * @param {String} profile
+	 * @param {Date or String} startDate
+	 * @param {Date or String} endDate
+	 */
+	var _Column = function(profile, startDate, endDate){
+		this.query = new _Query(profile, startDate, endDate);
+		
+		this.metricLabels = [];
+		
+		this.options = _defaultColumnOptions;
+	};
+
+	/*
+	 * Override default options
+	 * @param {Object} opts
+	 */
+	_Column.prototype.setOptions = function(opts){
+		this.options = opts;
+	};
+
+	/*
+	 * Adds a metric to Column
+	 * @param {String} metric
+	 * @param {String} label
+	 */
+	_Column.prototype.addMetric = function(metric, label){
+		this.metricLabels.push(label);
+		this.query.addMetric(metric);
+	};
+	
+	/*
+	 * Set dimension of Column
+	 * @param {String} dimension
+	 */
+	_Column.prototype.setDimension = function(dimension){
+		this.query.clearDimensions();
+		this.query.dimensions.push(dimension);
+		this.dimensionLabel = dimension;
+	};
+
+	/*
+	 * Draws Column in container element
+	 * @param {Element or String} container (or id of container element)
+	 * @param {Function} fn
+	 */
+	_Column.prototype.draw = function(container, fn){
+		var b = this;
+
+		this.query.execute(function (response) {
+
+			var data = response.rows;
+
+			var dt = new google.visualization.DataTable();
+
+			dt.addColumn('string', b.dimensionLabel);
+
+			// Add data column labels
+			for (var l = 0; l < b.metricLabels.length; l++) {
+				dt.addColumn('number', b.metricLabels[l]);
+			}
+
+			// add data
+			dt.addRows(data);
+
+			var element;
+
+			if(typeof container === 'string'){
+				element = document.getElementById(container);
+			} else {
+				element = container;
+			}
+
+			var chart = new google.visualization.ColumnChart(element);
+			chart.draw(dt, b.options);
+
+			if (typeof fn != 'undefined') {
 				fn();
 			}
 		});
@@ -827,6 +942,7 @@ var oo = (function(document){
 	return {
 		Query : _Query,
 		Timeline : _Timeline,
+		Column : _Column,
 		Bar : _Bar,
 		Metric : _Metric,
 		Pie : _Pie,
@@ -835,6 +951,7 @@ var oo = (function(document){
 		formatDate : _formatDate,
 		parseDate : _parseDate,
 		setAPIKey : _setAPIKey,
+		setColumnDefaults : _setColumnDefaults,
 		setTimelineDefaults : _setTimelineDefaults,
 		setPieDefaults : _setPieDefaults,
 		setTableDefaults : _setTableDefaults
