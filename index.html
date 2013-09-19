@@ -56,7 +56,7 @@
 
 <p>Other than the super fast and reliable API that sits behind it, the OOcharts JS script has had a number of improvements. One of the most notable is the ability to use HTML attributes to build charts:</p>
 
-<div class="highlight"><pre><span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'timeline'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-profile=</span><span class="s">'some analytics profile id'</span> <span class="na">data-oochart-metrics=</span><span class="s">'ga:visits,Visits,ga:newVisits,New Visits'</span><span class="nt">&gt;&lt;/div&gt;</span>
+<div class="highlight highlight-html"><pre><span class="nt">&lt;div</span> <span class="na">data-oochart=</span><span class="s">'timeline'</span> <span class="na">data-oochart-start-date=</span><span class="s">'30d'</span> <span class="na">data-oochart-profile=</span><span class="s">'some analytics profile id'</span> <span class="na">data-oochart-metrics=</span><span class="s">'ga:visits,Visits,ga:newVisits,New Visits'</span><span class="nt">&gt;&lt;/div&gt;</span>
 </pre></div>
 
 <p>The above code would draw a timeline which goes back 30 days (another feature is relative dates) to show all the visits and new visits on a line chart. Don't worry, we will get to the details.</p>
@@ -66,7 +66,7 @@
 
 <p>The OOcharts JS script is a single file. It can be downloaded from the GitHub repository (which also contains a number of examples). Simply place the <code>oocharts.js</code> file into your page:</p>
 
-<div class="highlight"><pre>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
+<div class="highlight highlight-html"><pre>    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
 </pre></div>
 
 <p>Once the script has loaded, you will have access to the <code>oo</code> object which houses all the goodies to create OOcharts.</p>
@@ -103,7 +103,7 @@
 
 <p>OOcharts uses the <a href="https://developers.google.com/chart/interactive/docs/reference">Google Visualization Library</a> to chart data. To get started, you will need to call the <code>load()</code> function after setting your API Key. This is all a bunch of gibberish, so here is a code example:</p>
 
-<div class="highlight"><pre>
+<div class="highlight highlight-html"><pre>
 <span class="c">&lt;!--Include OOcharts script--&gt;</span>
 <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">'oocharts.js'</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">'text/javascript'</span><span class="nt">&gt;</span>
@@ -151,7 +151,7 @@
 <code>draw(container, callback)</code> - Calling draw will draw the metric into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
 </ul><p>Here is a quick example of using a metric to show visits through the JS API. Normally, you would replace the <code>{{}}</code> content with your information.</p>
 
-<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+<div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -199,7 +199,7 @@
 <code>data-oochart-end-date</code> - The ending date of the data. Can be relative, formatted <code>YYYY-MM-DD</code>, or null (indicating current date).</li>
 </ul><p>Once <code>oo.load</code> is called successfully, the HTML element content will be replaced with the query results.</p>
 
-<div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+<div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -237,7 +237,7 @@
 <code>setOptions(opts)</code> -  Overwrites any default options for the timeline. See line chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/linechart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the timeline.</li>
 <li>
 <code>draw(container, callback)</code> - Calling draw will draw the Timeline into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -283,7 +283,7 @@
 <code>data-oochart-profile</code> - The Google Analytics profile ID.</li>
 <li>
 <code>data-oochart-metrics</code> - A list of comma-deliminated metrics in the format: <code>metric,label,metric,label</code>. Check out the example below.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -323,7 +323,7 @@
 <code>setOptions(opts)</code> -  Overwrites any default options for the bar chart. See bar chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the timeline.</li>
 <li>
 <code>draw(container, callback)</code> - Calling draw will draw the Bar into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -373,7 +373,7 @@
 <code>data-oochart-metrics</code> - A list of comma-deliminated metrics in the format: <code>metric,label,metric,label</code>. Check out the example below.</li>
 <li>
 <code>data-oochart-dimension</code> - The dimension to group metric values by.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -413,7 +413,7 @@
 <code>setOptions(opts)</code> -  Overwrites any default options for the Pie. See Pie chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/piechart#Configuration_Options">here</a>. <code>opts</code> is a simple object, for example: <code>{ colors : ['#000', '#111', '#222'] }</code> would assign colors to the Pie.</li>
 <li>
 <code>draw(container, callback)</code> - Calling draw will draw the Pie into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -460,7 +460,7 @@
 <code>data-oochart-metric</code> - Should contain the metric for the Pie and the label, seperated by a <code>,</code>. (i.e. <code>"ga:visits,Visits"</code>)</li>
 <li>
 <code>data-oochart-dimension</code> - Should contain the dimension for the Pie and the label, seperated by a <code>,</code>. (i.e. <code>"ga:browser,Browser"</code>)</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -500,7 +500,7 @@
 <code>setOptions(opts)</code> -  Overwrites any default options for the Table. See Table chart options <a href="https://developers.google.com/chart/interactive/docs/gallery/table#Configuration_Options">here</a>.</li>
 <li>
 <code>draw(container, callback)</code> - Calling draw will draw the Table into the <code>container</code> element. The <code>container</code> can either be a <code>String</code> of the target element's id, or the DOM element object itself.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -548,7 +548,7 @@
 <code>data-oochart-metrics</code> - A list of comma-deliminated metrics and labels in the format: <code>metric,label,metric,label</code>. Check out the example below.</li>
 <li>
 <code>data-oochart-dimensions</code> - A list of comma-deliminated dimensions and labels in the format: <code>dimension,label,dimension,label</code>. Check out the example below.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -597,7 +597,7 @@
 <code>setMaxResults(maxResults)</code> - Sets the <code>maxResults</code> for the Query.</li>
 <li>
 <code>execute(callback)</code> - Executes the Query, and returns <code>data</code> as the sole parameter in the passed <code>callback</code> function.</li>
-</ul><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+</ul><div class="highlight highlight-html"><pre><span class="nt">&lt;html&gt;</span>
     <span class="nt">&lt;head&gt;</span>
     <span class="nt">&lt;/head&gt;</span>
     <span class="nt">&lt;body&gt;</span>
@@ -631,7 +631,7 @@
 
 <p>You may want to add more complex behaviour to your charts (such as adding a filter to your Timeline). This is actually really easy. Under each charting object is a Query (above). You can set the properties on the query under the chart before drawing it to achieve more complex charts:</p>
 
-<div class="highlight"><pre><span class="kd">var</span> <span class="nx">timeline</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Timeline</span><span class="p">(</span><span class="nx">profile</span><span class="p">,</span> <span class="nx">startDate</span><span class="p">,</span> <span class="nx">endDate</span><span class="p">);</span>
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">timeline</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">oo</span><span class="p">.</span><span class="nx">Timeline</span><span class="p">(</span><span class="nx">profile</span><span class="p">,</span> <span class="nx">startDate</span><span class="p">,</span> <span class="nx">endDate</span><span class="p">);</span>
 
 <span class="nx">timeline</span><span class="p">.</span><span class="nx">addMetric</span><span class="p">(</span><span class="s1">'ga:visits'</span><span class="p">,</span> <span class="s1">'Visits'</span><span class="p">);</span>
 <span class="nx">timeline</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">setFilter</span><span class="p">(</span><span class="s1">'ga:visits&gt;100'</span><span class="p">);</span> <span class="c1">//access query object</span>
@@ -686,7 +686,7 @@
 
 <p>Responses from either endpoint follow the format:</p>
 
-<div class="highlight"><pre><span class="c1">// successful response</span>
+<div class="highlight highlight-js"><pre><span class="c1">// successful response</span>
 <span class="p">{</span>
     <span class="s2">"column_headers"</span><span class="o">:</span><span class="p">[</span>
         <span class="p">{</span>
@@ -782,6 +782,8 @@
 <ul>
 <li>
 <a href="https://github.com/vijayamaharaja" class="user-mention">@vijayamaharaja</a> - Added support for older versions of IE (see #11)</li>
+<li>
+<a href="https://github.com/jamiedewitz" class="user-mention">@jamiedewitz</a> - Added column charts (see #21)</li>
 </ul>
       </section>
     </div>
