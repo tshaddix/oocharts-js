@@ -613,3 +613,4 @@ There are multiple ways to contribute to OOcharts! You can give a small donation
 ###Contributers###
 
 - @vijayamaharaja - Added support for older versions of IE (see #11)
+- @jamiedewitz - Added column charts (see #21)
