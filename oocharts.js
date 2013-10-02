@@ -233,6 +233,15 @@ var oo = (function(document){
 	};
 
 	/*
+	 * Sets Bar chart default options
+	 * @param {Object} opts
+	 */
+	var _setBarDefaults = function(opts){
+		_defaultBarOptions = opts;
+	};
+
+
+	/*
 	 * Sets Timeline chart default options
 	 * @param {Object} opts
 	 */
@@ -951,6 +960,7 @@ var oo = (function(document){
 		formatDate : _formatDate,
 		parseDate : _parseDate,
 		setAPIKey : _setAPIKey,
+		setBarDefaults : _setBarDefaults,
 		setColumnDefaults : _setColumnDefaults,
 		setTimelineDefaults : _setTimelineDefaults,
 		setPieDefaults : _setPieDefaults,
