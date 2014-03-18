@@ -606,6 +606,38 @@ This endpoint is used for dynamic access to your GA profiles. This is also the e
 - `maxResults` - *(optional)* The max results for the query.
 - `callback` - *(optional)* Only necessary when using JSONP response type.
 
+#Making Charts Responsive#
+The charts can be made responsive by redrawing the chart listening to the window.resize event.  The following code utilizes polling to reduce redraws.
+
+```js
+var chart;
+
+oo.setAPIKey('OOID');
+oo.load(function(){		
+	chart = new oo.Timeline('PROFILE_ID', "7d");
+	// set metrics and options here
+	drawChart();
+});
+
+var drawChart = function() {
+	chart.draw('ELEMENT_ID');
+};
+
+window.addEventListener('resize', function(event){
+	poll(function(){
+	   drawChart();
+   }, 100);
+});
+
+var poll = (function(){
+	var timer = 0;
+	return function(callback, ms){
+		clearTimeout(timer);
+		timer = setTimeout(callback, ms);
+	};
+})();
+```
+
 #Contributing#
 
 There are multiple ways to contribute to OOcharts! You can give a small donation at [gittip](https://gittip.com/OOcharts) or you can contribute to the code base. OOcharts can be consumed by multiple charting libraries and other projects, so feel free to start making your own OOcharts visualization library to interact with the API! If you need help getting started, just look at the source of the [OOcharts JS repository](https://github.com/OOcharts/js).
