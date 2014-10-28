@@ -1,33 +1,51 @@
 #Getting Started#
 
-OOcharts is an awesome little project that makes it easy to embed and share Google Analytics data through charts. It was started in the Summer of 2012 by [Tin Bin](http://tinb.in) and continues to grow. There are a few basics you need to know in order to get started:
+OOcharts is an awesome little project that makes it easy to embed and share Google Analytics data through charts. It was started in the Summer of 2012 by [Tin Bin](http://tinb.in). There are a few basics you need to know in order to get started:
 
-###API Keys###
-API Keys are created to give access to certain Google Analytics profiles. For every request to OOcharts, you will need a valid API Key. These keys can be created in [Mission Control](https://app.oocharts.com/mc/key/list).
+####Migrating from OOcharts Service to OOcharts Server####
+Once you have setup an [OOcharts Server](https://github.com/OOcharts/oocharts-server), include a reference to the Google Loader and then use `setAPIEndpoint()` to point to your OOcharts server.
 
-###Queries###
-Queries are packaged requests that are prebuilt on [Mission Control](https://app.oocharts.com/mc/query/list). Altough the API supports dynamic requests, Queries are useful for security. Queries restrict the parameters sent to Google Analytics and hide the Analytics profile ID. Users who want to display certain data on their site while also ensuring other parameters can not be retrieved should use Queries instead of the dynamic API.
+For example, if I installed my server under `oocharts.tinb.in`, a basic setup would look like this:
 
-#OOcharts JS#
+```html
 
-OOcharts got its original footing providing an easy to use Charting library along with the API. Guess what, it's back!
+	<script src="//www.google.com/jsapi"></script>
+	<script src="oocharts.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){
 
-####What's new in OOcharts JS####
+			// API key from OOchart server
+			oo.setAPIKey("{{ YOUR API KEY WHEN YOU CONFIGURED SERVER }}");
+			oo.setAPIEndpoint("http://oocharts.tinb.in/api/dynamic.jsonp");
+
+			oo.load(function(){
+
+				// Copy old oocharts code here
+
+			});
+		};
+	</script>
+
+```
+
+
+####What"s new in OOcharts JS####
 
 Other than the super fast and reliable API that sits behind it, the OOcharts JS script has had a number of improvements. One of the most notable is the ability to use HTML attributes to build charts:
 
 ```html
-<div data-oochart='timeline' data-oochart-start-date='30d' data-oochart-profile='some analytics profile id' data-oochart-metrics='ga:visits,Visits,ga:newVisits,New Visits'></div>
+<div data-oochart="timeline" data-oochart-start-date="30d" data-oochart-profile="some analytics profile id" data-oochart-metrics="ga:visits,Visits,ga:newVisits,New Visits"></div>
 ```
 
-The above code would draw a timeline which goes back 30 days (another feature is relative dates) to show all the visits and new visits on a line chart. Don't worry, we will get to the details.
+The above code would draw a timeline which goes back 30 days (another feature is relative dates) to show all the visits and new visits on a line chart. Don"t worry, we will get to the details.
 
 ###Including the Script###
 
-The OOcharts JS script is a single file. It can be downloaded from the GitHub repository (which also contains a number of examples). Simply place the `oocharts.js` file into your page:
+The OOcharts JS script is a single file.  Simply include the OOcharts file into your page along with the [Google Loader](https://developers.google.com/loader/):
 
 ```html
-	<script src='oocharts.js'></script>
+<script src="//www.google.com/jsapi"></script>
+<script src="oocharts.js"></script>
 ```
 
 Once the script has loaded, you will have access to the `oo` object which houses all the goodies to create OOcharts.
@@ -39,15 +57,15 @@ All OOcharts JS objects work with a few basic principals:
 You will need to have already created an API Key with access to the Google Profile you are trying to display.
 
 ####Profile ID####
-You will also need the Google Analytics Profile ID. You can find this in Mission Control next to wherever the profile name is displayed in brackets, or on your Google Analytics Dashboard.
+You will also need the Google Analytics Profile ID. You can find this on your Google Analytics Dashboard.
 
 ####Relative Dates####
 Dates can either be `Date` objects, Relative dates, or null (in which case the date will default to the current date). Relative Dates provide an easy way to get a range of data by using a number and a metric, such as "30d" for 30 days:
 
-- 'd': Days
-- 'w': Weeks
-- 'm': Months
-- 'y': Years
+- "d": Days
+- "w": Weeks
+- "m": Months
+- "y": Years
 
 It is important to note that only one of the two dates (start and end) can be relative. If the start date is relative, then it will include the dates **before** the end date (i.e. "30d" would make the start date 30 days from the end date). If the end date is relative, then it will include the dates **after** the start date.
 
@@ -56,29 +74,33 @@ OOcharts uses the [Google Visualization Library](https://developers.google.com/c
 
 ```html
 
-<!--Include OOcharts script-->
-<script src='oocharts.js'></script>
-<script type='text/javascript'>
-	window.onload = function(){
-		oo.setAPIKey("{{ YOUR API KEY }}");
+	<!--Include OOcharts script-->
+	<script src="//www.google.com/jsapi"></script>
+	<script src="oocharts.js"></script>
+	<script type="text/javascript">
+		window.onload = function(){
 
-		oo.load(function(){
+			// API key from OOchart server
+			oo.setAPIKey("{{ YOUR API KEY }}");
+			oo.setAPIEndpoint("{{ YOUR OOCHARTS SERVER URL + /api/dynamic.jsonp }}");
 
-			//Do charts here
+			oo.load(function(){
 
-		});
-	};
-</script>
+				//Do charts here
+
+			});
+		};
+	</script>
 
 ```
 
 Once the load callback has fired, you are ready to begin using OOcharts. The load function will also bind the OOcharts using HTML attributes once finished, but we will get to that later.
 
 ####Working with the Examples####
-The OOcharts JS library comes with a few examples. These examples have all the basics you will need to get started. Just make sure to replace `{{YOUR PROFILE ID}}` with your Google Analytics Profile ID and `{{YOUR API KEY}}` with your OOcharts API Key.
+The OOcharts JS library comes with a few examples. These examples have all the basics you will need to get started. Just make sure to replace `{{YOUR PROFILE ID}}` with your Google Analytics Profile ID and `{{YOUR API KEY}}` with your OOcharts API Key and `{{YOUR SERVER URL}}` with your OOcharts Server url.
 
 ####Issues####
-If you run in to any trouble with the OOcharts, you can email [support@oocharts.com](mailto:support@oocharts.com) or [create an issue](https://github.com/OOcharts/js/issues) on GitHub.
+If you run in to any trouble with the OOcharts, [create an issue](https://github.com/OOcharts/js/issues) on GitHub.
 
 ##Metric##
 Metrics are the simplest charting object which replace the inner HTML content of an element with the result of a query.
@@ -88,39 +110,44 @@ Metrics can easily be created through the JSAPI under the `oo` object.
 
 - `constructor(profile, startDate, endDate)` - The Metric constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
 - `setMetric(metric)` - Just as the method name states, this sets the metric to load. This should be a valid Google Analytics metric name, such as `"ga:visits"`; 
-- `draw(container, callback)` - Calling draw will draw the metric into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `draw(container, callback)` - Calling draw will draw the metric into the `container` element. The `container` can either be a `String` of the target element"s id, or the DOM element object itself.
 
 Here is a quick example of using a metric to show visits through the JS API. Normally, you would replace the `{{}}` content with your information.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		
-		Visits : <span id='metric'></span>
-		
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+			Visits : <span id="metric"></span>
 
-				oo.load(function(){
 
-					var metric = new oo.Metric("{{ YOUR PROFILE ID }}", "30d");
 
-					metric.setMetric("ga:visits");
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-					metric.draw('metric');
+				window.onload = function(){
 
-				});
-			};
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-		</script>
-	</body>
-</html>
+					oo.load(function(){
+
+						var metric = new oo.Metric("{{ YOUR PROFILE ID }}", "30d");
+
+						metric.setMetric("ga:visits");
+
+						metric.draw("metric");
+
+					});
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ####Using HTML Attributes####
@@ -135,25 +162,29 @@ You can also easily create Metrics through the HTML Attribute API.
 Once `oo.load` is called successfully, the HTML element content will be replaced with the query results.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		New Visits : <span data-oochart='metric' data-oochart-metric='ga:newVisits' data-oochart-start-date='30d' data-oochart-profile='{{ YOUR PROFILE ID }}'></span>
-		
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			New Visits : <span data-oochart="metric" data-oochart-metric="ga:newVisits" data-oochart-start-date="30d" data-oochart-profile="{{ YOUR PROFILE ID }}"></span>
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
 
-				oo.load();
-			};
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-		</script>
-	</body>
-</html>
+				window.onload = function(){
+
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
+
+					oo.load();
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ##Timeline##
@@ -163,38 +194,42 @@ A timeline is a Google Visualization [line chart](https://developers.google.com/
 
 - `constructor(profile, startDate, endDate)` - The Timeline constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
 - `addMetric(metric, label)` - Adds the `metric` to the timeline with the name `label`.
-- `setOptions(opts)` -  Overwrites any default options for the timeline. See line chart options [here](https://developers.google.com/chart/interactive/docs/gallery/linechart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the timeline.
-- `draw(container, callback)` - Calling draw will draw the Timeline into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `setOptions(opts)` -  Overwrites any default options for the timeline. See line chart options [here](https://developers.google.com/chart/interactive/docs/gallery/linechart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ["#000", "#111", "#222"] }` would assign colors to the timeline.
+- `draw(container, callback)` - Calling draw will draw the Timeline into the `container` element. The `container` can either be a `String` of the target element"s id, or the DOM element object itself.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div id='chart'></div>		
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<div id="chart"></div>
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.load(function(){
+				window.onload = function(){
 
-					var timeline = new oo.Timeline("{{ YOUR PROFILE ID }}", "30d");
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-					timeline.addMetric("ga:visits", "Visits");
+					oo.load(function(){
 
-					timeline.addMetric("ga:newVisits", "New Visits");
+						var timeline = new oo.Timeline("{{ YOUR PROFILE ID }}", "30d");
 
-					timeline.draw('chart');
+						timeline.addMetric("ga:visits", "Visits");
 
-				});
-			};
+						timeline.addMetric("ga:newVisits", "New Visits");
 
-		</script>
-	</body>
-</html>
+						timeline.draw("chart");
+
+					});
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ####Using HTML Attributes####
@@ -208,25 +243,29 @@ You can also easily create Timelines through the HTML Attribute API as well.
 
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div data-oochart='timeline' data-oochart-start-date='30d' data-oochart-metrics='ga:visits,Visits,ga:newVisits,New Visits' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
-		
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<div data-oochart="timeline" data-oochart-start-date="30d" data-oochart-metrics="ga:visits,Visits,ga:newVisits,New Visits" data-oochart-profile="{{ YOUR PROFILE ID }}"></div>
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.load();
-			};
+				window.onload = function(){
 
-		</script>
-	</body>
-</html>
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
+
+					oo.load();
+				};
+
+			</script>
+		</body>
+	</html>
+
 ```
 
 ##Bar##
@@ -237,40 +276,43 @@ A Bar is a Google Visualization [bar chart](https://developers.google.com/chart/
 - `constructor(profile, startDate, endDate)` - The Bar constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
 - `addMetric(metric, label)` - Adds the `metric` to the bar with the name `label`.
 - `setDimension(dimension)` - Sets the dimension for the bar chart.
-- `setOptions(opts)` -  Overwrites any default options for the bar chart. See bar chart options [here](https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the timeline.
-- `draw(container, callback)` - Calling draw will draw the Bar into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `setOptions(opts)` -  Overwrites any default options for the bar chart. See bar chart options [here](https://developers.google.com/chart/interactive/docs/gallery/barchart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ["#000", "#111", "#222"] }` would assign colors to the timeline.
+- `draw(container, callback)` - Calling draw will draw the Bar into the `container` element. The `container` can either be a `String` of the target element"s id, or the DOM element object itself.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div id='chart'></div>		
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<div id="chart"></div>
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+				window.onload = function(){
 
-				oo.load(function(){
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-					var bar = new oo.Bar("{{ YOUR PROFILE ID }}", "30d");
+					oo.load(function(){
 
-					bar.addMetric("ga:visits", "Visits");
+						var bar = new oo.Bar("{{ YOUR PROFILE ID }}", "30d");
 
-					bar.addMetric("ga:newVisits", "New Visits");
+						bar.addMetric("ga:visits", "Visits");
 
-					bar.setDimension("ga:continent");
+						bar.addMetric("ga:newVisits", "New Visits");
 
-					bar.draw('chart');
+						bar.setDimension("ga:continent");
 
-				});
-			};
+						bar.draw("chart");
 
-		</script>
-	</body>
-</html>
+					});
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ####Using HTML Attributes####
@@ -284,25 +326,28 @@ You can also easily create Bar Charts through the HTML Attribute API as well.
 - `data-oochart-dimension` - The dimension to group metric values by.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div data-oochart='bar' data-oochart-start-date='30d' data-oochart-dimension='ga:continent' data-oochart-metrics='ga:visits,Visits,ga:newVisits,New Visits' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
-		
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<div data-oochart="bar" data-oochart-start-date="30d" data-oochart-dimension="ga:continent" data-oochart-metrics="ga:visits,Visits,ga:newVisits,New Visits" data-oochart-profile="{{ YOUR PROFILE ID }}"></div>
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.load();
-			};
+				window.onload = function(){
 
-		</script>
-	</body>
-</html>
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
+
+					oo.load();
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ##Pie##
@@ -313,37 +358,40 @@ A Pie chart is really just what it sounds like: A Pie chart. This chart uses the
 - `constructor(profile, startDate, endDate)` - The Pie constructor takes in the Google Analytics profile, start date, and end date. All of these parameter options are discussed above in the *Basics* section.
 - `setMetric(metric, label)` - Sets the `metric` of the Pie with the name `label`.
 - `setDimension(dimension, label)` - Sets the `dimension` of the Pie.
-- `setOptions(opts)` -  Overwrites any default options for the Pie. See Pie chart options [here](https://developers.google.com/chart/interactive/docs/gallery/piechart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ['#000', '#111', '#222'] }` would assign colors to the Pie.
-- `draw(container, callback)` - Calling draw will draw the Pie into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `setOptions(opts)` -  Overwrites any default options for the Pie. See Pie chart options [here](https://developers.google.com/chart/interactive/docs/gallery/piechart#Configuration_Options). `opts` is a simple object, for example: `{ colors : ["#000", "#111", "#222"] }` would assign colors to the Pie.
+- `draw(container, callback)` - Calling draw will draw the Pie into the `container` element. The `container` can either be a `String` of the target element"s id, or the DOM element object itself.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div id='pie'></div>
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<div id="pie"></div>
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+				window.onload = function(){
 
-				oo.load(function(){
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-					var pie = new oo.Pie("{{ YOUR PROFILE ID }}", "30d");
+					oo.load(function(){
 
-					pie.setMetric("ga:visits", "Visits");
-					pie.setDimension("ga:browser");
+						var pie = new oo.Pie("{{ YOUR PROFILE ID }}", "30d");
 
-					pie.draw('pie');
+						pie.setMetric("ga:visits", "Visits");
+						pie.setDimension("ga:browser");
 
-				});
-			};
+						pie.draw("pie");
 
-		</script>
-	</body>
-</html>
+					});
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ####Using HTML Attributes####
@@ -358,25 +406,27 @@ Pie charts are available throught the new HTML API.
 
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div data-oochart='pie' data-oochart-start-date='30d' data-oochart-metric='ga:visits,Visits' data-oochart-dimension='ga:browser' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
 
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
+	<html>
+		<head>
+		</head>
+		<body>
+			<div data-oochart="pie" data-oochart-start-date="30d" data-oochart-metric="ga:visits,Visits" data-oochart-dimension="ga:browser" data-oochart-profile="{{ YOUR PROFILE ID }}"></div>
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-			window.onload = function(){
+				window.onload = function(){
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-				oo.load();
-			};
+					oo.load();
+				};
 
-		</script>
-	</body>
-</html>
+			</script>
+		</body>
+	</html>
 ```
 
 ##Table##
@@ -388,37 +438,40 @@ A Table can show a multiple dimensions by multiple metrics. This chart uses the 
 - `addMetric(metric, label)` - Adds the `metric` to the Table with the name `label`.
 - `addDimension(dimension, label)` - Adds the `dimension` to the Table with the name `label`.
 - `setOptions(opts)` -  Overwrites any default options for the Table. See Table chart options [here](https://developers.google.com/chart/interactive/docs/gallery/table#Configuration_Options).
-- `draw(container, callback)` - Calling draw will draw the Table into the `container` element. The `container` can either be a `String` of the target element's id, or the DOM element object itself.
+- `draw(container, callback)` - Calling draw will draw the Table into the `container` element. The `container` can either be a `String` of the target element"s id, or the DOM element object itself.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div id='table'></div>
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<div id="table"></div>
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+				window.onload = function(){
 
-				oo.load(function(){
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-					var table = new oo.Table("{{ YOUR PROFILE ID }}", "30d");
+					oo.load(function(){
 
-					table.addMetric("ga:visits", "Visits");
+						var table = new oo.Table("{{ YOUR PROFILE ID }}", "30d");
 
-					table.addDimension("ga:city", "City");
+						table.addMetric("ga:visits", "Visits");
 
-					table.draw('table');
+						table.addDimension("ga:city", "City");
 
-				});
-			};
+						table.draw("table");
 
-		</script>
-	</body>
-</html>
+					});
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ####Using HTML Attributes####
@@ -432,25 +485,28 @@ You may have guessed it: You can create Tables through the HTML API as well.
 - `data-oochart-dimensions` - A list of comma-deliminated dimensions and labels in the format: `dimension,label,dimension,label`. Check out the example below.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<div data-oochart='table' data-oochart-start-date='30d' data-oochart-metrics='ga:visits,Visits' data-oochart-dimensions='ga:city,City' data-oochart-profile='{{ YOUR PROFILE ID }}'></div>
 
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
+	<html>
+		<head>
+		</head>
+		<body>
+			<div data-oochart="table" data-oochart-start-date="30d" data-oochart-metrics="ga:visits,Visits" data-oochart-dimensions="ga:city,City" data-oochart-profile="{{ YOUR PROFILE ID }}"></div>
 
-			window.onload = function(){
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+				window.onload = function(){
 
-				oo.load();
-			};
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-		</script>
-	</body>
-</html>
+					oo.load();
+				};
+
+			</script>
+		</body>
+	</html>
 ```
 
 ##Query##
@@ -469,33 +525,36 @@ The Query object is the core object of the OOcharts JS. The query object maintai
 - `execute(callback)` - Executes the Query, and returns `data` as the sole parameter in the passed `callback` function.
 
 ```html
-<html>
-	<head>
-	</head>
-	<body>
-		<script src='oocharts.js'></script>
-		<script type="text/javascript">
 
-			window.onload = function(){
+	<html>
+		<head>
+		</head>
+		<body>
+			<script src="//www.google.com/jsapi"></script>
+			<script src="oocharts.js"></script>
+			<script type="text/javascript">
 
-				oo.setAPIKey("{{ YOUR API KEY }}");
+				window.onload = function(){
 
-				oo.load(function(){
+					oo.setAPIKey("AAAAA1111111BBBBBBCCCCCCC");
+					oo.setAPIEndpoint("http://my-oocharts-server.com/api/dynamic.jsonp");
 
-					var query = new oo.Query('{{ YOUR PROFILE ID}}', '30d');
-					query.addMetric('ga:visits');
-					query.addDimension('ga:date');
-					query.addSort('-ga:visits');;
-					query.execute(function(data){
-						alert(data);
+					oo.load(function(){
+
+						var query = new oo.Query("{{ YOUR PROFILE ID}}", "30d");
+						query.addMetric("ga:visits");
+						query.addDimension("ga:date");
+						query.addSort("-ga:visits");;
+						query.execute(function(data){
+							alert(data);
+						});
+
 					});
+				};
 
-				});
-			};
-
-		</script>
-	</body>
-</html>
+			</script>
+		</body>
+	</html>
 ```
 
 ##Advanced Chart/Query Options##
@@ -504,14 +563,14 @@ You may want to add more complex behaviour to your charts (such as adding a filt
 ```js
 var timeline = new oo.Timeline(profile, startDate, endDate);
 
-timeline.addMetric('ga:visits', 'Visits');
-timeline.query.setFilter('ga:visits>100'); //access query object
+timeline.addMetric("ga:visits", "Visits");
+timeline.query.setFilter("ga:visits>100"); //access query object
 
 timeline.draw(container);
 ```
 
 ##Helper Methods##
-There are a couple public facing methods on the `oo` object which we've included to make your quest for chart greatness easier.
+There are a couple public facing methods on the `oo` object which we"ve included to make your quest for chart greatness easier.
 
 - `oo.formatDate(date)` - Formats `date` into the acceptable GA format (YYYY-MM-DD);
 - `oo.parseDate(val)` - Parses a GA date string into a Javascript date object.
@@ -529,14 +588,6 @@ This is especially helpful if you want to stick to the HTML API. Set your defaul
 #OOcharts API#
 
 Ah, so you want to drive stick huh? The OOcharts API is powerful all on its own, despite the cool looking chart library we include. This section will describe the two API endpoints and how to take advantage of them from Javascript in the browser or application code running on your server (cool, right?).
-
-##General##
-
-All OOcharts API endpoints have the general format: `/{{version}}/{{action}}.{{type}}`. The `version` dictates the API version (current `v1`), the action describes the action `query` or `dynamic`, and finally the `type` dictates a response of `json` or `jsonp`.
-
-An example query call with a JSON response: `/v1/query.json`
-
-An example dynamic call with a JSONP response: `/v1/dynamic.jsonp`
 
 It should be noted that all `jsonp` response types will use the `callback` query string parameter.
 
@@ -569,25 +620,9 @@ Responses from either endpoint follow the format:
 
 ```
 
-## Query ##
-
-`GET /v1/query.json` or `GET /v1/query.jsonp`
-
-This endpoint is used to interact with the `Query` object in Mission Control.
-
-#### Query Strings ####
-
-- `key` - *(required)* Your API Key. This must have access to the Google Analytics profile used by the query.
-- `start` - *(required)* Start date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*.
-- `end` - *(optional)* End date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*. If no date is given, the current date of the Google Analytics profile's timezone (pretty snazzy huh?) will be used.
-- `query` - *(required)* The query slug of the Mission Control Query.
-- `page` - *(optional)* The page number of the results. Useful when using the Page Size setting of a Mission Control Query.
-- `filters` - *(optional)* A qualified Google Analytics filter string.
-- `callback` - *(optional)* Only necessary when using JSONP response type.
-
 ## Dynamic ##
 
-`GET /v1/dynamic.json` or `GET /v1/dynamic.jsonp`
+`GET /dynamic.json` or `GET /dynamic.jsonp`
 
 This endpoint is used for dynamic access to your GA profiles. This is also the endpoint used by the charting library.
 
@@ -596,7 +631,7 @@ This endpoint is used for dynamic access to your GA profiles. This is also the e
 - `key` - *(required)* Your API Key. This must have access to the Google Analytics profile used by the query.
 - `profile` - *(required)* The Google Analytics profile ID.
 - `start` - *(required)* Start date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*.
-- `end` - *(optional)* End date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*. If no date is given, the current date of the Google Analytics profile's timezone (pretty snazzy huh?) will be used.
+- `end` - *(optional)* End date of query. Should be in format `YYYY-MM-DD` or in relative date format described in *Basics*. If no date is given, the current date of the Google Analytics profile"s timezone (pretty snazzy huh?) will be used.
 - `metrics` - *(required)* A list of valid Google Analytics metrics deliminated by `,`.
 - `dimensions` - *(optional)* A list of valid Google Analytics dimensions deliminated by `,`.
 - `sort` - *(optional)* A list of valid Google Analytics sort parameters deliminated by `,`.
@@ -610,39 +645,37 @@ This endpoint is used for dynamic access to your GA profiles. This is also the e
 The charts can be made responsive by redrawing the chart listening to the window.resize event.  The following code utilizes polling to reduce redraws.
 
 ```js
-var chart;
 
-oo.setAPIKey('OOID');
-oo.load(function(){		
-	chart = new oo.Timeline('PROFILE_ID', "7d");
-	// set metrics and options here
-	drawChart();
-});
+	var chart;
 
-var drawChart = function() {
-	chart.draw('ELEMENT_ID');
-};
+	oo.setAPIKey("OOID");
+	oo.load(function(){
+		chart = new oo.Timeline("PROFILE_ID", "7d");
+		// set metrics and options here
+		drawChart();
+	});
 
-window.addEventListener('resize', function(event){
-	poll(function(){
-	   drawChart();
-   }, 100);
-});
-
-var poll = (function(){
-	var timer = 0;
-	return function(callback, ms){
-		clearTimeout(timer);
-		timer = setTimeout(callback, ms);
+	var drawChart = function() {
+		chart.draw("ELEMENT_ID");
 	};
-})();
+
+	window.addEventListener("resize", function(event){
+		poll(function(){
+		   drawChart();
+	   }, 100);
+	});
+
+	var poll = (function(){
+		var timer = 0;
+		return function(callback, ms){
+			clearTimeout(timer);
+			timer = setTimeout(callback, ms);
+		};
+	})();
 ```
-
-#Contributing#
-
-There are multiple ways to contribute to OOcharts! You can give a small donation at [gittip](https://gittip.com/OOcharts) or you can contribute to the code base. OOcharts can be consumed by multiple charting libraries and other projects, so feel free to start making your own OOcharts visualization library to interact with the API! If you need help getting started, just look at the source of the [OOcharts JS repository](https://github.com/OOcharts/js).
 
 ###Contributers###
 
 - @vijayamaharaja - Added support for older versions of IE (see #11)
 - @jamiedewitz - Added column charts (see #21)
+- @ddimaria - Added section to README about making charts responsive.
