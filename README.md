@@ -1,4 +1,5 @@
 #Getting Started#
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/tshaddix/oocharts-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 OOcharts is an awesome little project that makes it easy to embed and share Google Analytics data through charts. It was started in the Summer of 2012 by [Tin Bin](http://tinb.in) and continues to grow. There are a few basics you need to know in order to get started:
 
