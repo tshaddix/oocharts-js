@@ -1,6 +1,9 @@
 var oo = (function(document){
 
-	var _serviceEndpoint = "https://api.oocharts.com/v1/dynamic.jsonp";
+	'use strict';
+
+	var _serviceEndpoint = undefined;
+
 	var _apiKey = undefined;
 
 	var _defaultTimelineOptions = {};
@@ -47,9 +50,11 @@ var oo = (function(document){
 			var endDate = _element.getAttribute('data-oochart-end-date');
 			var profile = _element.getAttribute('data-oochart-profile');
 
+            var metric, metricString, metrics, dimension, dimensions, dimensionString, m, d;
+
 			// if metric
 			if(type.toLowerCase() === 'metric'){
-				var metric = new _Metric(profile, startDate, endDate);
+				metric = new _Metric(profile, startDate, endDate);
 				metric.setMetric(_element.getAttribute('data-oochart-metric'));
 				metric.draw(_element);
 				
@@ -57,15 +62,15 @@ var oo = (function(document){
 			} else if (type.toLowerCase() === 'column'){
 				var column = new _Column(profile, startDate, endDate);
 				
-				var metricsString = _element.getAttribute('data-oochart-metrics');
-				var metrics = metricsString.split(',');
+				metricString = _element.getAttribute('data-oochart-metrics');
+				metrics = metricString.split(',');
 
-				for(var m = 0; m < metrics.length; m++){
+				for(m = 0; m < metrics.length; m++){
 					column.addMetric(metrics[m], metrics[m+1]);
 					m=m+1;
 				}
 				
-				var dimension = _element.getAttribute('data-oochart-dimension');
+				dimension = _element.getAttribute('data-oochart-dimension');
 
 				column.setDimension(dimension);
 				
@@ -75,10 +80,10 @@ var oo = (function(document){
 			} else if (type.toLowerCase() === 'timeline'){
 				var timeline = new _Timeline(profile, startDate, endDate);
 
-				var metricsString = _element.getAttribute('data-oochart-metrics');
-				var metrics = metricsString.split(',');
+				metricString = _element.getAttribute('data-oochart-metrics');
+				metrics = metricString.split(',');
 
-				for(var m = 0; m < metrics.length; m++){
+				for(m = 0; m < metrics.length; m++){
 					timeline.addMetric(metrics[m], metrics[m+1]);
 					m=m+1;
 				}
@@ -88,15 +93,15 @@ var oo = (function(document){
 			} else if (type.toLowerCase() === 'bar' ) {
 				var bar = new _Bar(profile, startDate, endDate);
 				
-				var metricsString = _element.getAttribute('data-oochart-metrics');
-				var metrics = metricsString.split(',');
+				metricString = _element.getAttribute('data-oochart-metrics');
+				metrics = metricString.split(',');
 
-				for(var m = 0; m < metrics.length; m++){
+				for(m = 0; m < metrics.length; m++){
 					bar.addMetric(metrics[m], metrics[m+1]);
 					m=m+1;
 				}
 				
-				var dimension = _element.getAttribute('data-oochart-dimension');
+				dimension = _element.getAttribute('data-oochart-dimension');
 
 				bar.setDimension(dimension);
 				
@@ -105,10 +110,10 @@ var oo = (function(document){
 			} else if (type.toLowerCase() === 'pie'){
 				var pie = new _Pie(profile, startDate, endDate);
 
-				var metricString = _element.getAttribute('data-oochart-metric');
-				var dimension = _element.getAttribute('data-oochart-dimension');
+				metricString = _element.getAttribute('data-oochart-metric');
+				dimension = _element.getAttribute('data-oochart-dimension');
 
-				var metric = metricString.split(',');
+				metric = metricString.split(',');
 
 				pie.setMetric(metric[0], metric[1]);
 				pie.setDimension(dimension);
@@ -119,18 +124,18 @@ var oo = (function(document){
 			} else if (type.toLowerCase() === 'table'){
 				var table = new _Table(profile, startDate, endDate);
 
-				var metricString = _element.getAttribute('data-oochart-metrics');
-				var dimensionString = _element.getAttribute('data-oochart-dimensions');
+				metricString = _element.getAttribute('data-oochart-metrics');
+				dimensionString = _element.getAttribute('data-oochart-dimensions');
 
-				var metrics = metricString.split(',');
-				var dimensions = dimensionString.split(',');
+				metrics = metricString.split(',');
+				dimensions = dimensionString.split(',');
 
-				for(var m = 0; m < metrics.length; m++){
+				for(m = 0; m < metrics.length; m++){
 					table.addMetric(metrics[m], metrics[m+1]);
 					m += 1;
 				}
 
-				for(var d = 0; d < dimensions.length; d++){
+				for(d = 0; d < dimensions.length; d++){
 					table.addDimension(dimensions[d], dimensions[d+1]);
 					d += 1;
 				}
@@ -143,44 +148,11 @@ var oo = (function(document){
 	};
 
 	/*
-	 * Loads a specified script and fires callback when finished
-	 * @param {String} src
-	 * @param {Function} callback
-	 */
-	var _loadScript = function(src, callback){
-		var s = document.createElement('script');
-		s.type = 'text/javascript';
-		s.src = src;
-		s.async = false;
-
-		s.onreadystatechange = s.onload = function () {
-
-			var state = s.readyState;
-
-			if (!callback.done && (!state || /loaded|complete/.test(state))) {
-				callback.done = true;
-				callback();
-			}
-		};
-
-		var c = document.getElementsByTagName('script')[0];
-		c.parentNode.insertBefore(s, c);
-	};
-
-	/*
 	 * Loads OOcharts dependencies
 	 * @param {Function} callback
 	 */
 	var  _load = function(callback){
 		if(!_apiKey) throw "Set APIKey with oo.setAPIKey before calling load";
-
-		// load JSAPI
-		var load_jsapi = function (callback) {
-			if (typeof google === 'undefined') {
-				_loadScript("https://www.google.com/jsapi", callback);
-			}
-			else { callback(); }
-		};
 
 		// load Google Visualization
 		var load_visualization = function (callback) {
@@ -206,14 +178,12 @@ var oo = (function(document){
 
 		var cb = callback;
 
-		load_jsapi(function () {
-			load_visualization(function () {
-	    		if(cb) cb();
+        load_visualization(function () {
+            if(cb) cb();
 
-	    		// run autobuild
-	    		_autoBuild();
-			});
-		});
+            // run autobuild
+            _autoBuild();
+        });
 	};
 
 	/*
@@ -222,6 +192,14 @@ var oo = (function(document){
 	 */
 	var _setAPIKey = function(key){
 		_apiKey = key;
+	};
+
+	/*
+	 * Sets API Key
+	 * @param {String} key
+	 */
+	var _setAPIEndpoint = function(ep){
+		_serviceEndpoint = ep;
 	};
 	
 	/*
@@ -458,7 +436,7 @@ var oo = (function(document){
 			if(data.rows.length === 0){
 				data.rows = [[]];
 			}
-				
+
 			callback(data);
 		});
 	};
@@ -960,6 +938,7 @@ var oo = (function(document){
 		formatDate : _formatDate,
 		parseDate : _parseDate,
 		setAPIKey : _setAPIKey,
+		setAPIEndpoint : _setAPIEndpoint,
 		setBarDefaults : _setBarDefaults,
 		setColumnDefaults : _setColumnDefaults,
 		setTimelineDefaults : _setTimelineDefaults,
@@ -981,7 +960,7 @@ var oo = (function(document){
 var JSONP = (function (document) {
     var requests = 0,
         callbacks = {};
- 
+
     return {
         /**
          * makes a JSONP request
@@ -996,48 +975,48 @@ var JSONP = (function (document) {
                 callback = arguments[1];
                 data = {};
             }
- 
+
             // determine if there already are params
             src += (src.indexOf('?')+1 ? '&' : '?');
- 
+
             var head = document.getElementsByTagName('head')[0],
                 script = document.createElement('script'),
                 params = [],
                 requestId = requests,
                 param;
-            
+
             // increment the requests
             requests++;
- 
+
             // create external callback name
             data.callback = 'JSONP.callbacks.request_' + requestId;
-            
+
             // set callback function
             callbacks['request_' + requestId] = function (data) {
                 // clean up
                 head.removeChild(script);
                 delete callbacks['request_' + requestId];
- 
+
                 // fire callback
-                callback(data); 
+                callback(data);
             };
-            
+
             // traverse data
             for (param in data) {
                 params.push(param + '=' + encodeURIComponent(data[param]));
             }
- 
+
             // generate params
             src += params.join('&');
- 
+
             // set script attributes
             script.type = 'text/javascript';
             script.src = src;
- 
+
             // add to the DOM
-            head.appendChild(script); 
+            head.appendChild(script);
         },
- 
+
         /**
          * keeps a public reference of the callbacks object
          */
